@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Toaster, toast } from 'sonner';
 import { SIPProvider } from 'react-sipjs';
 
 import Dashboard from '@/pages/dashboard';
@@ -30,6 +31,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
         </Routes>
       </Router>
+      <Toaster richColors position="top-center" duration={100000} />
     </div>
   );
 }

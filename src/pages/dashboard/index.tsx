@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 import { faker } from '@faker-js/faker';
 
 import CallLogDesktop from '@/components/CallLogDesktop';
@@ -6,6 +8,22 @@ import { columns } from './components/columns';
 import { callStatuses } from './data/data';
 
 function Dashboard() {
+  useEffect(() => {
+    const promise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('Resolved, lol');
+      }, 2000);
+    });
+
+    // toast.promise(promise, {
+    //   loading: 'loading',
+    //   success: (data) => {
+    //     return `Toast has been added`;
+    //   },
+    //   error: 'Error',
+    // });
+  }, []);
+
   const calls = Array.from({ length: 100 }, () => {
     const date = new Date().toLocaleTimeString();
     const time = new Date().toLocaleTimeString('en-in', {
