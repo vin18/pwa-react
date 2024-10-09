@@ -1,26 +1,35 @@
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { SIPProvider } from 'react-sipjs';
-import { CallCenter } from './components/CallCenter';
+
+import Dashboard from '@/pages/dashboard';
+import Call from '@/pages/Call';
+import CallUI from '@/pages/CallUI';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import AppLayout from '@/components/AppLayout';
 
 // TODO:
 // 1. Handle reload confirmation
 // 2. Add user on click event
 
-const sipProviderConfig = {
-  domain: '172.18.1.194:8089',
-  webSocketServer: 'wss://172.18.1.194:8089/asterisk/ws',
-};
-
 function App() {
   return (
     <div className="p-5">
-      <SIPProvider
-        options={{
-          domain: sipProviderConfig.domain,
-          webSocketServer: sipProviderConfig.webSocketServer,
-        }}
-      >
-        <CallCenter />
-      </SIPProvider>
+      <Router>
+        <Routes>
+          <Route
+            element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/call-ui" element={<CallUI />} />
+            <Route path="/call" element={<Call />} />
+          </Route>
+          <Route path="/" element={<Dashboard />} />
+        </Routes>
+      </Router>
     </div>
   );
 }

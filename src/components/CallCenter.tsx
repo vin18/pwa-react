@@ -43,7 +43,7 @@ export const CallCenter = () => {
     };
   }, [sessionManager]);
 
-  return null;
+  // return null;
 
   return Object.keys(sessions)?.map((session) => {
     console.log('Map session', session);

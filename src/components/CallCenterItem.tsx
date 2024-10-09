@@ -1,6 +1,8 @@
 import { useSessionCall } from 'react-sipjs';
 import { useRef, useEffect } from 'react';
 
+import { Button } from './ui/button';
+
 function CallCenterItem({ sessionId }) {
   const {
     isHeld,
@@ -51,17 +53,17 @@ function CallCenterItem({ sessionId }) {
 
       {'Established' === session.state && (
         <>
-          <button onClick={isHeld ? unhold : hold}>
+          <Button onClick={isHeld ? unhold : hold}>
             {isHeld ? 'Unhold' : 'Hold'}
-          </button>
-          <button onClick={isMuted ? unmute : mute}>
+          </Button>
+          <Button onClick={isMuted ? unmute : mute}>
             {isMuted ? 'Ummute' : 'Mute'}
-          </button>
+          </Button>
         </>
       )}
 
       {!['Terminating', 'Terminated'].includes(session.state) && (
-        <button onClick={hangup}>Hang Up</button>
+        <Button onClick={hangup}>Hang Up</Button>
       )}
 
       <audio ref={ringtoneRef} src="/sounds/ringtone.wav" preload="auto" loop />
