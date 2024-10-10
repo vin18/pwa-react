@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 
-import { Call } from '../data/schema';
+import { Call } from '../../../schemas/CALL';
 import { DataTableColumnHeader } from './data-table-column-header';
 import { DataTableRowActions } from './data-table-row-actions';
 import { callStatuses } from '../data/data';

@@ -12,7 +12,7 @@ function AppLayout() {
           <Outlet />
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

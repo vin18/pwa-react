@@ -54,45 +54,47 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 //   },
 // ];
 
-const getCallIcon = (type: string) => {
+export const getCallIcon = (type: string) => {
   switch (type) {
     case 'incoming':
     case 'accepted':
-      return <PhoneIncoming className="h-4 w-4 text-green-500" />;
-
     case 'outgoing':
-      return <PhoneOutgoing className="h-4 w-4 text-green-500" />;
+    case 'initial':
+      return <PhoneIncoming className="h-4 w-4 text-green-500" />;
 
     case 'missed':
     case 'rejected':
+    case 'terminated':
       return <PhoneMissed className="h-4 w-4 text-red-500" />;
 
     case 'in progress':
+    case 'established':
       return <PhoneMissed className="h-4 w-4 text-yellow-500" />;
 
-    default:
-      return <Phone className="h-4 w-4" />;
+    // default:
+    //   return <Phone className="h-4 w-4" />;
   }
 };
 
-const getCallTypeColor = (type: string) => {
+export const getCallTypeColor = (type: string) => {
   switch (type) {
     case 'incoming':
     case 'accepted':
-      return 'bg-green-100 text-green-800';
-
     case 'outgoing':
+    case 'initial':
       return 'bg-green-100 text-green-800';
 
     case 'missed':
     case 'rejected':
+    case 'terminated':
       return 'bg-red-100 text-red-800';
 
     case 'in progress':
+    case 'established':
       return 'bg-yellow-100 text-yellow-800';
 
-    default:
-      return 'bg-gray-100 text-gray-800';
+    // default:
+    //   return 'bg-gray-100 text-gray-800';
   }
 };
 

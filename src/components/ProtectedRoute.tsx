@@ -1,8 +1,12 @@
+import { useAuth } from '@/contexts/AuthContext';
+import { useAxiosWithAuth } from '@/utils/apiClient';
 import { Navigate, useLocation } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const { pathname } = useLocation();
-  const isAuthenticated = true; // TODO: maintain state for user
+  useAxiosWithAuth();
+  const { isAuthenticated } = useAuth();
+  // const isAuthenticated = true; // TODO: maintain state for user
 
   return isAuthenticated ? (
     children

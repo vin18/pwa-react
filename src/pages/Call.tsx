@@ -7,16 +7,17 @@ const sipProviderConfig = {
 };
 
 function Call() {
-  return (
-    <SIPProvider
-      options={{
-        domain: sipProviderConfig.domain,
-        webSocketServer: sipProviderConfig.webSocketServer,
-      }}
-    >
-      <CallCenter />
-    </SIPProvider>
-  );
+  return null;
+  // return (
+  //   <SIPProvider
+  //     options={{
+  //       domain: sipProviderConfig.domain,
+  //       webSocketServer: sipProviderConfig.webSocketServer,
+  //     }}
+  //   >
+  //     <CallCenter />
+  //   </SIPProvider>
+  // );
 }
 
 export default Call;
