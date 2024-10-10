@@ -15,59 +15,26 @@ import { Badge, PhoneCallIcon } from 'lucide-react';
 import useCallManager from '@/hooks/useCallManager';
 import CallCenterItem from '@/components/CallCenterItem';
 import { Alert, AlertTitle } from '@/components/ui/alert';
+import { getCallsApi } from '@/services/apiCalls';
 
 function Dashboard() {
-  const ringtoneRef = useRef(null);
   useCallManager();
   const { sessionManager, sessions } = useSIPProvider();
-  const [progress, setProgress] = useState('');
-
-  const calls = Array.from({ length: 100 }, () => {
-    const date = new Date().toLocaleTimeString();
-    const time = new Date().toLocaleTimeString('en-in', {
-      hour: 'numeric',
-      minute: 'numeric',
-    });
-
-    return {
-      id: `CALL-${faker.number.int({ min: 1000, max: 9999 })}`,
-      name: faker.person.firstName(),
-      phoneNumber: faker.phone.number({ style: 'national' }),
-      duration: `${time}`,
-      type: faker.helpers.arrayElement(callStatuses).value,
-      date: `${date} ${time}`,
-      remarks: faker.hacker
-        .phrase()
-        .replace(/^./, (letter) => letter.toUpperCase()),
-    };
-  });
+  const [calls, setCalls] = useState([]);
 
   console.log('Session manager', sessionManager?.managedSessions);
   console.log('Sessions', sessions);
 
   useEffect(() => {
-    const { session: activeSession } =
-      sessionManager?.managedSessions[
-        sessionManager.managedSessions.length - 1
-      ] ?? {};
-
-    let p = '';
-    if (activeSession?.state === 'Initial') {
-      p = 'Incoming call..';
-    } else if (activeSession?.state === 'Established') {
-      p = 'Call is in progress..';
-    } else if (activeSession?.state === 'Terminated') {
-      p = 'Call ended..';
-    } else {
-      p = '';
+    async function fetchCalls() {
+      const data = await getCallsApi();
+      setCalls(data);
     }
+    fetchCalls();
+  }, []);
 
-    setProgress(p);
-  }, [sessionManager]);
-
-  // progress = 'Call is in progress..';
-  console.log('Progress', progress);
-  console.log('sessionManager', sessionManager);
+  const activeSessionId =
+    Object.keys(sessions)[Object.keys(sessions)?.length - 1];
 
   return (
     <>
@@ -84,39 +51,9 @@ function Dashboard() {
           </div> */}
         </div>
 
-        {progress && (
-          <div
-            className=" flex items-center bg-blue-400 text-white text-xs font-bold px-3 py-2"
-            role="alert"
-          >
-            <PhoneCallIcon className="h-4 w-4 mr-2" />
-            <p>{progress}</p>
-          </div>
-        )}
-
-        {/* {progress && (
-          <Badge
-            className={getCallTypeColor(activeSession?.state?.toLowerCase())}
-          >
-            <span className="flex items-center space-x-1">
-              {getCallIcon(activeSession?.state?.toLowerCase())}
-              <span>{progress}</span>
-            </span>
-          </Badge>
-        )} */}
-
-        {Object.keys(sessions)?.map((session) => {
-          console.log('Map session', session);
-          return (
-            <div style={{ marginBottom: '20px' }}>
-              <CallCenterItem sessionId={session} />
-            </div>
-          );
-        })}
-
+        {activeSessionId && <CallCenterItem sessionId={activeSessionId} />}
         <DataTable data={calls} columns={columns} />
       </div>
-      {/* <CallLogDesktop /> */}
     </>
   );
 }

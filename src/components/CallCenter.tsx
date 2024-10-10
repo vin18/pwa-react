@@ -45,12 +45,17 @@ export const CallCenter = () => {
 
   // return null;
 
-  return Object.keys(sessions)?.map((session) => {
-    console.log('Map session', session);
-    return (
-      <div style={{ margin: '50px' }}>
-        <CallCenterItem sessionId={session} />
-      </div>
-    );
-  });
+  const activeSessionId =
+    Object.keys(sessions)[Object.keys(sessions)?.length - 1];
+
+  return <CallCenterItem sessionId={activeSessionId} />;
+
+  // return Object.keys(sessions)?.map((session) => {
+  //   console.log('Map session', session);
+  //   return (
+  //     <div style={{ margin: '50px' }}>
+  //       <CallCenterItem sessionId={session} />
+  //     </div>
+  //   );
+  // });
 };

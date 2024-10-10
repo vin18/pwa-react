@@ -38,8 +38,6 @@ function App() {
                 }
               >
                 <Route path="/dashboard" element={<Dashboard />} />
-                {/* <Route path="/call-ui" element={<CallUI />} /> */}
-                {/* <Route path="/call" element={<Call />} /> */}
               </Route>
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />

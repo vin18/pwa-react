@@ -1,11 +1,12 @@
 import { useSessionCall } from 'react-sipjs';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import { PhoneCallIcon, RocketIcon } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { Alert, AlertTitle } from './ui/alert';
+import { getCallTypeColor } from './CallLogDesktop';
 
 function CallCenterItem({ sessionId }) {
   const {
@@ -23,6 +24,7 @@ function CallCenterItem({ sessionId }) {
     timer,
   } = useSessionCall(sessionId);
 
+  const [progress, setProgress] = useState('');
   const ringtoneRef = useRef(null);
 
   useEffect(() => {
@@ -75,13 +77,36 @@ function CallCenterItem({ sessionId }) {
         </div>
       ));
     }
+
+    if (session?.state === 'Initial') {
+      setProgress('Incoming call..');
+    } else if (session?.state === 'Established') {
+      setProgress('Call is in progress..');
+    } else if (session?.state === 'Terminated') {
+      setProgress('Call ended..');
+      setTimeout(() => {
+        setProgress('');
+      }, 3000);
+    } else {
+      setProgress('');
+    }
   }, [session.state]);
 
   return (
     <div>
       {/* <p>Session - {sessionId}</p> */}
 
-      {/* <p>{session.state}</p> */}
+      {progress && (
+        <div
+          className={`flex items-center ${getCallTypeColor(
+            session?.state?.toLowerCase()
+          )} text-xs font-bold px-3 py-2 mb-4 shadow`}
+          role="alert"
+        >
+          <PhoneCallIcon className="h-4 w-4 mr-2" />
+          <p>{progress}</p>
+        </div>
+      )}
 
       {/* {session.state === 'Initial' && (
         <>
