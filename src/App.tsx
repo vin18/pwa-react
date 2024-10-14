@@ -14,8 +14,9 @@ import { AuthProvider } from './contexts/AuthContext';
 // 2. Add user on click event
 
 const sipProviderConfig = {
-  domain: '172.18.1.194:8089',
-  webSocketServer: 'wss://172.18.1.194:8089/asterisk/ws',
+  // domain: '172.18.1.194:8089',
+  domain: '172.18.2.35:8089',
+  webSocketServer: 'wss://172.18.2.35:8089/asterisk/ws',
 };
 
 function App() {
