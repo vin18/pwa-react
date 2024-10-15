@@ -8,18 +8,45 @@ import Call from '@/pages/Call';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AppLayout from '@/components/AppLayout';
 import { AuthProvider } from './contexts/AuthContext';
+import { useEffect } from 'react';
 
 // TODO:
 // 1. Handle reload confirmation
 // 2. Add user on click event
 
+const SIP_URL = `172.18.2.60:8089`;
+
 const sipProviderConfig = {
-  // domain: '172.18.1.194:8089',
-  domain: '172.18.2.35:8089',
-  webSocketServer: 'wss://172.18.2.35:8089/asterisk/ws',
+  domain: SIP_URL,
+  webSocketServer: `wss://${SIP_URL}/asterisk/ws`,
 };
 
+async function getData() {
+  const url = `https://${SIP_URL}/asterisk/ws`;
+  try {
+    const response = await fetch(url, {
+      mode: 'no-cors',
+    });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const json = await response.json();
+    console.log(json);
+    return Promise.resolve(json);
+  } catch (error) {
+    console.error(error.message);
+    return Promise.reject(error);
+  }
+}
+
 function App() {
+  useEffect(() => {
+    getData()
+      .then(() => console.log('SSL handshake completed'))
+      .catch(() => console.log('Failed SSL handshake'));
+  }, []);
+
   return (
     <div className="p-5">
       <AuthProvider>
