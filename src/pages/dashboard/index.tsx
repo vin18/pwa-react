@@ -1,25 +1,25 @@
-import { useEffect, useRef, useState } from 'react';
-import { toast } from 'sonner';
-import { faker } from '@faker-js/faker';
-import { useSessionCall, useSIPProvider } from 'react-sipjs';
+import { useEffect, useState } from 'react';
+import { useSIPProvider } from 'react-sipjs';
 
-import CallLogDesktop, {
-  getCallIcon,
-  getCallTypeColor,
-} from '@/components/CallLogDesktop';
 import { DataTable } from './components/data-table';
 import { columns } from './components/columns';
-import { callStatuses } from './data/data';
-import { Button } from '@/components/ui/button';
-import { Badge, PhoneCallIcon } from 'lucide-react';
 import useCallManager from '@/hooks/useCallManager';
 import CallCenterItem from '@/components/CallCenterItem';
 import { getCallsApi } from '@/services/apiCalls';
+import { socket } from '@/utils/socket';
+import {
+  VTS_SOCKET_CALL_CHANNEL,
+  VTS_SOCKET_MESSAGE_CHANNEL,
+} from '@/utils/constants';
+import usePageRefresh from '@/hooks/usePageRefresh';
 
 function Dashboard() {
+  const [callStatus, setCallStatus] = useState({ state: '', message: '' });
   useCallManager();
   const { sessionManager, sessions } = useSIPProvider();
   const [calls, setCalls] = useState([]);
+
+  usePageRefresh();
 
   console.log('Session manager', sessionManager?.managedSessions);
   console.log('Sessions', sessions);
@@ -34,6 +34,24 @@ function Dashboard() {
 
   const activeSessionId =
     Object.keys(sessions)[Object.keys(sessions)?.length - 1];
+
+  useEffect(() => {
+    socket.on(VTS_SOCKET_MESSAGE_CHANNEL, (data) => {
+      if (data.code === VTS_SOCKET_CALL_CHANNEL) {
+        // TODO:
+        const callMsg = {
+          state: 'incoming',
+          message: 'Incoming call from Sharad..',
+        };
+        setCallStatus(callMsg);
+        console.log('Socket data received: ', data);
+      }
+    });
+
+    return () => {
+      socket.off(VTS_SOCKET_MESSAGE_CHANNEL);
+    };
+  }, []);
 
   return (
     <>
@@ -50,7 +68,10 @@ function Dashboard() {
           </div> */}
         </div>
 
-        {activeSessionId && <CallCenterItem sessionId={activeSessionId} />}
+        {activeSessionId && (
+          <CallCenterItem sessionId={activeSessionId} callStatus={callStatus} />
+        )}
+
         <DataTable data={calls} columns={columns} />
       </div>
     </>

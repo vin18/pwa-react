@@ -18,24 +18,11 @@ function AppLayout() {
       socket.on('connect', () => console.log('Socket connected on client'));
       socket.on('disconnect', async () => {
         console.log('Socket disconnected on client');
-        // TODO: Logout user
         if (isAuthenticated) {
           await logout(false);
         }
       });
     }
-  }, []);
-
-  useEffect(() => {
-    socket.on(VTS_SOCKET_MESSAGE_CHANNEL, (data) => {
-      if (data.code === VTS_SOCKET_CALL_CHANNEL) {
-        console.log('Socket data received: ', data);
-      }
-    });
-
-    return () => {
-      socket.off(VTS_SOCKET_MESSAGE_CHANNEL);
-    };
   }, []);
 
   return (

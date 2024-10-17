@@ -8,7 +8,10 @@ import { Badge } from './ui/badge';
 import { Alert, AlertTitle } from './ui/alert';
 import { getCallTypeColor } from './CallLogDesktop';
 
-function CallCenterItem({ sessionId }) {
+function CallCenterItem({
+  sessionId,
+  callStatus = { state: '', message: '' },
+}) {
   const {
     isHeld,
     isMuted,
@@ -96,7 +99,20 @@ function CallCenterItem({ sessionId }) {
     <div>
       {/* <p>Session - {sessionId}</p> */}
 
-      {progress && (
+      {/* Call state from socket */}
+      {Object.keys(callStatus)?.length > 0 && (
+        <div
+          className={`flex items-center ${getCallTypeColor(
+            callStatus?.state?.toLowerCase()
+          )} text-xs font-bold px-3 py-2 mb-4 shadow`}
+          role="alert"
+        >
+          <PhoneCallIcon className="h-4 w-4 mr-2" />
+          <p>{callStatus.message}</p>
+        </div>
+      )}
+
+      {/* {progress && (
         <div
           className={`flex items-center ${getCallTypeColor(
             session?.state?.toLowerCase()
@@ -106,7 +122,7 @@ function CallCenterItem({ sessionId }) {
           <PhoneCallIcon className="h-4 w-4 mr-2" />
           <p>{progress}</p>
         </div>
-      )}
+      )} */}
 
       {/* {session.state === 'Initial' && (
         <>

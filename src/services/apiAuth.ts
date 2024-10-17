@@ -18,9 +18,19 @@ export async function loginApi(values: IPayload) {
   }
 }
 
+export async function logoutApi() {
+  try {
+    const { data } = await apiClient.post('/v1/auth/logout');
+    return data.data;
+  } catch (error: unknown) {
+    console.log(error);
+    return error;
+  }
+}
+
 export async function localStorageApi() {
   try {
-    const { data } = await apiClient.post(`/getSecretKeyForLocalStorage`);
+    const { data } = await apiClient.post(`/v1/auth/getLocalStorageSecretKey`);
     return data.lssk;
   } catch (error: unknown) {
     console.log(error);

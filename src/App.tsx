@@ -14,6 +14,7 @@ import {
   VTS_SOCKET_CALL_CHANNEL,
   VTS_SOCKET_MESSAGE_CHANNEL,
 } from './utils/constants';
+import usePageRefresh from './hooks/usePageRefresh';
 
 // TODO:
 // 1. Handle reload confirmation
@@ -46,11 +47,11 @@ async function getData() {
 }
 
 function App() {
-  useEffect(() => {
-    getData()
-      .then(() => console.log('SSL handshake completed'))
-      .catch(() => console.log('Failed SSL handshake'));
-  }, []);
+  // useEffect(() => {
+  //   getData()
+  //     .then(() => console.log('SSL handshake completed'))
+  //     .catch(() => console.log('Failed SSL handshake'));
+  // }, []);
 
   return (
     <div className="p-5">
@@ -76,7 +77,7 @@ function App() {
               <Route path="/login" element={<Login />} />
             </Routes>
           </Router>
-          <Toaster richColors position="top-right" duration={50000} />
+          <Toaster richColors position="top-right" />
         </SIPProvider>
       </AuthProvider>
     </div>
