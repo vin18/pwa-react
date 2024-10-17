@@ -14,7 +14,6 @@ import { Button } from '@/components/ui/button';
 import { Badge, PhoneCallIcon } from 'lucide-react';
 import useCallManager from '@/hooks/useCallManager';
 import CallCenterItem from '@/components/CallCenterItem';
-import { Alert, AlertTitle } from '@/components/ui/alert';
 import { getCallsApi } from '@/services/apiCalls';
 
 function Dashboard() {

@@ -9,12 +9,17 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import AppLayout from '@/components/AppLayout';
 import { AuthProvider } from './contexts/AuthContext';
 import { useEffect } from 'react';
+import { socket } from '@/utils/socket';
+import {
+  VTS_SOCKET_CALL_CHANNEL,
+  VTS_SOCKET_MESSAGE_CHANNEL,
+} from './utils/constants';
 
 // TODO:
 // 1. Handle reload confirmation
 // 2. Add user on click event
 
-const SIP_URL = `172.18.2.60:8089`;
+const SIP_URL = `172.18.2.72:8089`;
 
 const sipProviderConfig = {
   domain: SIP_URL,
