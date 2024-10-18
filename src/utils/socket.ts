@@ -1,7 +1,10 @@
 import { io } from 'socket.io-client';
 import { BASE_URL } from '@/utils/apiClient';
 
-export const socket = io('http://localhost:3000', {
+const prod = 'http://172.18.2.18:3000';
+const local = 'http://localhost:3000';
+
+export const socket = io(local, {
   autoConnect: false,
   transports: ['websocket'],
   reconnection: true,

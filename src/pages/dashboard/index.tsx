@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useSIPProvider } from 'react-sipjs';
+import { RegisterStatus, useSIPProvider } from 'react-sipjs';
+import { toast } from 'sonner';
 
 import { DataTable } from './components/data-table';
 import { columns } from './components/columns';
@@ -12,13 +13,13 @@ import {
   VTS_SOCKET_MESSAGE_CHANNEL,
 } from '@/utils/constants';
 import usePageRefresh from '@/hooks/usePageRefresh';
-import CallStatusState from '@/utils/callStatus';
+import { CallStatusState } from '@/utils/callStatus';
 
 function Dashboard() {
   const [callStatus, setCallStatus] = useState({ state: '', message: '' });
-  useCallManager();
-  const { sessionManager, sessions } = useSIPProvider();
   const [calls, setCalls] = useState([]);
+  const { sessionManager, sessions, registerStatus } = useSIPProvider();
+  useCallManager();
 
   usePageRefresh();
 
@@ -87,6 +88,28 @@ function Dashboard() {
     };
   }, []);
 
+  const handleCall = async (receiver = 9384) => {
+    // 9379 - Jey G
+    // 9384 - Sharad
+
+    const customHeaders = [
+      'DI: DEALER2',
+      'DN: 9386',
+      'CN: 9384',
+      'CI: DEALER1',
+    ];
+
+    const inviterOptions = {
+      extraHeaders: customHeaders, // Add extra headers here
+    };
+
+    await sessionManager?.call(
+      `sip:${receiver}@172.18.1.194:5060`,
+      inviterOptions
+    );
+    toast.success('Call connected!');
+  };
+
   return (
     <>
       <div className="hidden h-full flex-1 flex-col p-8 pt-0 mb-4 md:flex">
@@ -101,6 +124,23 @@ function Dashboard() {
             <UserNav />
           </div> */}
         </div>
+
+        <p
+          className={`mb-2 ${
+            registerStatus === RegisterStatus.UNREGISTERED
+              ? 'text-red-500'
+              : 'text-green-500'
+          }`}
+        >
+          Dealer is&nbsp;
+          {registerStatus === RegisterStatus.UNREGISTERED
+            ? 'unregistered'
+            : 'registered'}{' '}
+        </p>
+
+        {/* <Button className="w-16 mb-4" onClick={() => handleCall(9384)}>
+          Call
+        </Button> */}
 
         {activeSessionId && (
           <CallCenterItem

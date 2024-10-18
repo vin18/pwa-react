@@ -14,12 +14,14 @@ export const AuthProvider = ({ children }) => {
     VTS_LOCAL_STORAGE_TOKEN_KEY,
     secretKey
   );
+  const [dealerData, setDealerData] = useState({});
 
   const isAuthenticated = Boolean(token);
   // const isAuthenticated = true; // TODO: Remove
 
   const login = (loginData = null) => {
     setToken(loginData?.authToken);
+    setDealerData(loginData?.dealer);
     handleSocketConnect(loginData?.authToken);
     setSecretKey(loginData?.lssk);
   };
@@ -56,6 +58,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     token,
     setToken,
+    dealerData,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

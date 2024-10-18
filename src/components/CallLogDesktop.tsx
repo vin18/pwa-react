@@ -1,4 +1,4 @@
-import { Phone, PhoneIncoming, PhoneOutgoing, PhoneMissed } from 'lucide-react';
+import { PhoneIncoming, PhoneMissed, PhoneIcon } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import {
@@ -10,6 +10,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getCallStatus } from '@/utils/callStatus';
+import { Button } from './ui/button';
+import { SIP_URL } from '@/App';
+import { useSIPProvider } from 'react-sipjs';
+import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 // const callData = [
 //   {
@@ -98,8 +104,60 @@ export const getCallTypeColor = (type: string) => {
   }
 };
 
+interface ICall {
+  sessionid: string;
+  starttime: number;
+  endtime: number;
+  callstatus: string;
+  duration: string;
+  clientname: string;
+  clientid: string;
+  remarks: string;
+  phonenumber: string;
+  recordingpath: string;
+  createdat: string;
+}
+
+function convertDateTime(dateTimeEpoch) {
+  const dateTime = new Date(Number(dateTimeEpoch));
+  const year = dateTime.getFullYear();
+  const month = dateTime.getMonth() + 1; // Months are zero-based, so add 1
+  const day = dateTime.getDate();
+  const hours = dateTime.getHours();
+  const minutes = dateTime.getMinutes();
+  const seconds = dateTime.getSeconds();
+  return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+}
+
 export default function CallLogDesktop({ table }) {
-  const row = table.getRowModel().rows;
+  const { sessionManager } = useSIPProvider();
+  const { dealerData } = useAuth();
+  const rows = table.getRowModel().rows;
+
+  const handleCall = async (receiver = {}) => {
+    // 9379 - Jey G
+    // 9384 - Sharad
+    console.log('Receiver', receiver);
+    const { clientnumber, clientid } = receiver;
+
+    const customHeaders = [
+      `DI: ${dealerData.dealerid}`,
+      `DN: ${dealerData.phonenumber}`,
+      `CN: ${clientnumber}`,
+      `CI: ${clientid}`,
+    ];
+
+    // const customHeaders = [
+    //   'DI: DEALER2',
+    //   'DN: 9386',
+    //   'CN: 9384',
+    //   'CI: DEALER1',
+    // ];
+
+    const inviterOptions = { extraHeaders: customHeaders };
+    await sessionManager?.call(`sip:9384@${SIP_URL}`, inviterOptions);
+    toast.success('Call connected!');
+  };
 
   return (
     <div className="container mx-auto py-10">
@@ -112,52 +170,78 @@ export default function CallLogDesktop({ table }) {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead></TableHead>
             <TableHead className="w-[250px]">ID</TableHead>
             <TableHead className="w-[250px]">Name</TableHead>
             <TableHead>Phone Number</TableHead>
             <TableHead>Duration</TableHead>
             <TableHead>Type</TableHead>
-            <TableHead className="text-right">Date & Time</TableHead>
+            <TableHead>Start Time</TableHead>
+            <TableHead>End Time</TableHead>
+            <TableHead>Remarks</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {row.map(({ original: call }) => {
+          {rows.map(({ original: call }: ICall) => {
+            console.log('Call', call);
+            const durationEpoch = new Date(
+              Number(call.endtime) - Number(call.starttime)
+            );
+            const duration = `${durationEpoch.getMinutes()}:${durationEpoch.getSeconds()}`;
+            const formattedStartTime = convertDateTime(call.starttime);
+            const formattedEndTime = convertDateTime(call.endtime);
+            const callStatus = getCallStatus(Number(call.callstatus));
+
             return (
-              <TableRow key={call.id}>
-                <TableCell>{call.id}</TableCell>
+              <TableRow key={call.sessionid}>
+                <TableCell>
+                  <Button
+                    onClick={() => handleCall(call)}
+                    className="p-2"
+                    variant="ghost"
+                  >
+                    <PhoneIcon className="h-4 w-4 cursor-pointer" />
+                  </Button>
+                </TableCell>
+                <TableCell>{call.sessionid}</TableCell>
                 <TableCell className="font-medium">
                   <div className="flex items-center space-x-3">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={`https://api.dicebear.com/6.x/initials/svg?seed=${call.name}`}
-                        alt={call.name}
-                      />
-                      <AvatarFallback>
-                        {call.name
-                          .split(' ')
-                          .map((n) => n[0])
-                          .join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span>{call.name}</span>
+                    {call.clientid && (
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src={`https://api.dicebear.com/6.x/initials/svg?seed=${call.clientid}`}
+                          alt={call.clientid}
+                        />
+                        <AvatarFallback>
+                          {call.clientid
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+                    <span>{call.clientid}</span>
                   </div>
                 </TableCell>
-                <TableCell>{call.phoneNumber}</TableCell>
-                <TableCell>{call.duration}</TableCell>
+                <TableCell>{call.phonenumber}</TableCell>
+                <TableCell>{duration}</TableCell>
                 <TableCell>
                   <Badge
                     variant="secondary"
-                    className={getCallTypeColor(call.type)}
+                    className={getCallTypeColor(callStatus.toLowerCase())}
                   >
                     <span className="flex items-center space-x-1">
-                      {getCallIcon(call.type)}
+                      {getCallIcon(callStatus.toLowerCase())}&nbsp;
                       <span>
-                        {call.type.charAt(0).toUpperCase() + call.type.slice(1)}
+                        {callStatus.charAt(0).toUpperCase() +
+                          callStatus.slice(1)}
                       </span>
                     </span>
                   </Badge>
                 </TableCell>
-                <TableCell className="text-right">{call.date}</TableCell>
+                <TableCell>{formattedStartTime}</TableCell>
+                <TableCell>{formattedEndTime}</TableCell>
+                <TableCell>{call.remarks}</TableCell>
               </TableRow>
             );
           })}

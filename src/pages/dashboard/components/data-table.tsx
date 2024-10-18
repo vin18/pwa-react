@@ -60,7 +60,7 @@ export function DataTable<TData, TValue>({
     <div>
       <DataTableToolbar table={table} />
       <CallLogDesktop table={table} />
-      <DataTablePagination table={table} />
+      {/* <DataTablePagination table={table} /> */}
     </div>
   );
 }

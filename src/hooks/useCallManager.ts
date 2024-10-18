@@ -1,37 +1,18 @@
+import { useAuth } from '@/contexts/AuthContext';
 import { useEffect } from 'react';
 import { useSIPProvider } from 'react-sipjs';
 
-const dealerConfig = {
-  username: '1112',
-  password: '1112',
-};
-
 function useCallManager() {
-  const { connectAndRegister } = useSIPProvider();
-  const { sessionManager } = useSIPProvider();
+  const { dealer } = useAuth();
 
-  // const handleCall = async (receiver) => {
-  //   // 9379 - Jey G
-  //   // 9384 - Sharad
-  //   const res = await sessionManager?.call(receiver);
-  // };
+  const dealerConfig = {
+    username: dealer?.phonenumber,
+    password: dealer?.phonenumber,
+  };
 
-  // useEffect(() => {
-  //   connectAndRegister({
-  //     username: dealerConfig.username,
-  //     password: dealerConfig.password,
-  //   });
-  // }, []);
+  const { connectAndRegister, sessionManager } = useSIPProvider();
 
   useEffect(() => {
-    // sessionManager
-    // ?.call('sip:9379@172.18.1.194:5060')
-    // ?.call('sip:9390@172.18.1.194:5060');
-    //   .then((res) => console.log(res));
-
-    // sessionManager?.register();
-    // sessionManager?.connect();
-
     connectAndRegister({
       username: dealerConfig.username,
       password: dealerConfig.password,
@@ -41,7 +22,9 @@ function useCallManager() {
       sessionManager?.disconnect();
       sessionManager?.unregister();
     };
-  }, []);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dealer]);
 }
 
 export default useCallManager;
