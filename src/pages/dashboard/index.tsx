@@ -12,6 +12,7 @@ import {
   VTS_SOCKET_MESSAGE_CHANNEL,
 } from '@/utils/constants';
 import usePageRefresh from '@/hooks/usePageRefresh';
+import CallStatusState from '@/utils/callStatus';
 
 function Dashboard() {
   const [callStatus, setCallStatus] = useState({ state: '', message: '' });
@@ -38,13 +39,46 @@ function Dashboard() {
   useEffect(() => {
     socket.on(VTS_SOCKET_MESSAGE_CHANNEL, (data) => {
       if (data.code === VTS_SOCKET_CALL_CHANNEL) {
-        // TODO:
-        const callMsg = {
-          state: 'incoming',
-          message: 'Incoming call from Sharad..',
-        };
-        setCallStatus(callMsg);
         console.log('Socket data received: ', data);
+        const callMsg = { state: '', message: '' };
+        const { CallStatus, ClientId, ClientNumber } = data.message;
+        callMsg['payload'] = { CallStatus, ClientId, ClientNumber };
+        switch (CallStatus) {
+          // case CallStatusState.INCOMING:
+          case CallStatusState.ATTEMPTING:
+            callMsg['state'] = 'Initial';
+            callMsg['message'] = `Incoming call from ${
+              ClientId ? ClientId : ClientNumber
+            }`;
+            break;
+
+          case CallStatusState.CONNECTED:
+            callMsg['state'] = 'Established';
+            callMsg['message'] = `Call is in progress with ${
+              ClientId ? ClientId : ClientNumber
+            }`;
+            break;
+
+          case CallStatusState.MISSED:
+            callMsg['state'] = 'Established';
+            callMsg['message'] = `Missed call from ${ClientId ?? ClientNumber}`;
+            break;
+
+          case CallStatusState.HANGUP:
+            callMsg['state'] = 'Terminated';
+            callMsg['message'] = `Call completed with ${
+              ClientId ?? ClientNumber
+            }`;
+            break;
+        }
+
+        // // TODO:
+        // const callMsg = {
+        //   state: 'incoming',
+        //   message: 'Incoming call from Sharad..',
+        // };
+        console.log('Packet formed', callMsg);
+        setCallStatus(callMsg);
       }
     });
 
@@ -69,7 +103,11 @@ function Dashboard() {
         </div>
 
         {activeSessionId && (
-          <CallCenterItem sessionId={activeSessionId} callStatus={callStatus} />
+          <CallCenterItem
+            sessionId={activeSessionId}
+            callStatus={callStatus}
+            setCallStatus={setCallStatus}
+          />
         )}
 
         <DataTable data={calls} columns={columns} />

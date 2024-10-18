@@ -7,10 +7,12 @@ import { PhoneCallIcon, RocketIcon } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { Alert, AlertTitle } from './ui/alert';
 import { getCallTypeColor } from './CallLogDesktop';
+import CallStatusState from '@/utils/callStatus';
 
 function CallCenterItem({
   sessionId,
-  callStatus = { state: '', message: '' },
+  callStatus = { state: '', message: '', payload: {} },
+  setCallStatus,
 }) {
   const {
     isHeld,
@@ -46,40 +48,79 @@ function CallCenterItem({
     }
 
     if (session.state === 'Initial') {
-      toast.custom((t) => (
-        <div className="bg-gray-100  p-4  border border-gray-200 rounded shadow">
-          Alice
-          <div className="flex">
-            <PhoneCallIcon className="w-4 mr-2" />
-            <p>Incoming call..</p>
+      toast.custom(
+        (t) => (
+          <div className="bg-gray-100  p-4  border border-gray-200 rounded shadow">
+            {callStatus?.payload?.ClientId ?? callStatus?.payload?.ClientNumber}
+            <div className="flex">
+              <PhoneCallIcon className="w-4 mr-2" />
+              <p>Incoming call..</p>
+            </div>
+            <div className="space-x-4 mt-2 ">
+              <Button
+                variant="success"
+                onClick={() => {
+                  console.log('Clicked on answer');
+                  answer();
+                  ringtoneRef.current.pause();
+                  toast.dismiss();
+                }}
+              >
+                Accept
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  console.log('Clicked on decline');
+                  decline();
+                  ringtoneRef.current.pause();
+                  toast.dismiss();
+                }}
+              >
+                Decline
+              </Button>
+            </div>
           </div>
-          <div className="space-x-4 mt-2 ">
-            <Button
-              variant="success"
-              onClick={() => {
-                console.log('Clicked on answer');
-                answer();
-                ringtoneRef.current.pause();
-                toast.dismiss();
-              }}
-            >
-              Accept
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => {
-                console.log('Clicked on decline');
-                decline();
-                ringtoneRef.current.pause();
-                toast.dismiss();
-              }}
-            >
-              Decline
-            </Button>
-          </div>
-        </div>
-      ));
+        ),
+        { duration: 20000 }
+      );
     }
+
+    // if (session.state === 'Initial') {
+    //   toast.custom((t) => (
+    //     <div className="bg-gray-100  p-4  border border-gray-200 rounded shadow">
+    //       Alice
+    //       <div className="flex">
+    //         <PhoneCallIcon className="w-4 mr-2" />
+    //         <p>Incoming call..</p>
+    //       </div>
+    //       <div className="space-x-4 mt-2 ">
+    //         <Button
+    //           variant="success"
+    //           onClick={() => {
+    //             console.log('Clicked on answer');
+    //             answer();
+    //             ringtoneRef.current.pause();
+    //             toast.dismiss();
+    //           }}
+    //         >
+    //           Accept
+    //         </Button>
+    //         <Button
+    //           variant="destructive"
+    //           onClick={() => {
+    //             console.log('Clicked on decline');
+    //             decline();
+    //             ringtoneRef.current.pause();
+    //             toast.dismiss();
+    //           }}
+    //         >
+    //           Decline
+    //         </Button>
+    //       </div>
+    //     </div>
+    //   ));
+    // }
 
     if (session?.state === 'Initial') {
       setProgress('Incoming call..');
@@ -89,18 +130,19 @@ function CallCenterItem({
       setProgress('Call ended..');
       setTimeout(() => {
         setProgress('');
-      }, 3000);
+        setCallStatus({ state: '', message: '' });
+      }, 10000);
     } else {
       setProgress('');
     }
-  }, [session.state]);
+  }, [session.state, callStatus.state]);
 
   return (
     <div>
       {/* <p>Session - {sessionId}</p> */}
 
       {/* Call state from socket */}
-      {Object.keys(callStatus)?.length > 0 && (
+      {callStatus?.state && (
         <div
           className={`flex items-center ${getCallTypeColor(
             callStatus?.state?.toLowerCase()
@@ -142,10 +184,11 @@ function CallCenterItem({
         </>
       )} */}
 
-      {/* 
       {!['Terminating', 'Terminated'].includes(session.state) && (
-        <Button onClick={hangup}>Hang Up</Button>
-      )} */}
+        <Button className="mb-4 mt-2" onClick={hangup}>
+          Hang Up
+        </Button>
+      )}
 
       <audio ref={ringtoneRef} src="/sounds/ringtone.wav" preload="auto" loop />
     </div>
