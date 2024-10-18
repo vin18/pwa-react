@@ -14,7 +14,7 @@ export async function loginApi(values: IPayload) {
     return data;
   } catch (error: unknown) {
     console.log(error);
-    return error;
+    throw new Error(error?.response?.data?.message ?? error);
   }
 }
 
