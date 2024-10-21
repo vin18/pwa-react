@@ -16,8 +16,6 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  console.log('Row', row);
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,7 +29,11 @@ export function DataTableRowActions<TData>({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Delete</DropdownMenuItem>
+        <DropdownMenuItem>
+          <a href="/VTSLogger_incoming_9386_20241021151717.wav" download>
+            Download
+          </a>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

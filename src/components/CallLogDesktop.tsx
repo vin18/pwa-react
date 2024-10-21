@@ -1,4 +1,5 @@
 import { PhoneIncoming, PhoneMissed, PhoneIcon } from 'lucide-react';
+import { flexRender } from '@tanstack/react-table';
 
 import { Badge } from '@/components/ui/badge';
 import {
@@ -16,6 +17,7 @@ import { SIP_URL } from '@/App';
 import { useSIPProvider } from 'react-sipjs';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
+import { columns } from '@/pages/dashboard/components/columns';
 
 // const callData = [
 //   {
@@ -171,6 +173,8 @@ export default function CallLogDesktop({ table }) {
     toast.success('Call connected!');
   };
 
+  console.log('table.getRowModel()', table.getRowModel());
+
   return (
     <div className="container mx-auto py-10">
       {/* <h1 className="text-2xl font-bold mb-2">Recent calls</h1>
@@ -181,7 +185,24 @@ export default function CallLogDesktop({ table }) {
       /> */}
       <Table>
         <TableHeader>
-          <TableRow>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id} colSpan={header.colSpan}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+
+          {/* <TableRow>
             <TableHead></TableHead>
             <TableHead>ID</TableHead>
             <TableHead>Name</TableHead>
@@ -191,10 +212,10 @@ export default function CallLogDesktop({ table }) {
             <TableHead>Start Time</TableHead>
             <TableHead>End Time</TableHead>
             <TableHead>Remarks</TableHead>
-          </TableRow>
+          </TableRow> */}
         </TableHeader>
         <TableBody>
-          {rows.map(({ original: call }: ICall) => {
+          {/* {rows.map(({ original: call }: ICall) => {
             // console.log('Call', call);
             const durationEpoch = Number(call.endtime) - Number(call.starttime);
             const duration = formatDuration(durationEpoch);
@@ -258,7 +279,28 @@ export default function CallLogDesktop({ table }) {
                 <TableCell>{call.remarks}</TableCell>
               </TableRow>
             );
-          })}
+          })} */}
+
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && 'selected'}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>

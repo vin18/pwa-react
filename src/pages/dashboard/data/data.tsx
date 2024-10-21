@@ -4,31 +4,37 @@ import {
   QuestionMarkCircledIcon,
   StopwatchIcon,
 } from '@radix-ui/react-icons';
+import { PhoneIncoming, PhoneMissed } from 'lucide-react';
 
 export const callStatuses = [
   {
     value: 'incoming',
     label: 'Incoming',
-    icon: QuestionMarkCircledIcon,
+    icon: <PhoneIncoming className="h-4 w-4 text-green-500" />,
+    callStatus: 1,
   },
   {
     value: 'outgoing',
     label: 'Outgoing',
-    icon: CheckCircledIcon,
+    icon: <PhoneIncoming className="h-4 w-4 text-green-500" />,
+    callStatus: 1,
   },
   {
     value: 'accepted',
     label: 'Accepted',
-    icon: CircleIcon,
+    icon: <PhoneIncoming className="h-4 w-4 text-green-500" />,
+    callStatus: 3,
   },
   {
     value: 'in progress',
     label: 'In Progress',
-    icon: StopwatchIcon,
+    icon: <PhoneIncoming className="h-4 w-4 text-green-500" />,
+    callStatus: 3,
   },
   {
     value: 'rejected',
     label: 'Rejected',
-    icon: CheckCircledIcon,
+    icon: <PhoneMissed className="h-4 w-4 text-yellow-500" />,
+    callStatus: 5,
   },
 ];

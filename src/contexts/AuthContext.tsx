@@ -8,11 +8,13 @@ import {
   VTS_LOCAL_STORAGE_TOKEN_KEY,
 } from '@/utils/constants';
 import { localStorageApi, logoutApi } from '@/services/apiAuth';
+import { useSIPProvider } from 'react-sipjs';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
+  const { sessionManager } = useSIPProvider();
 
   const [secretKey, setSecretKey] = useState('');
   // const [token, setToken] = useLocalStorageState(
@@ -43,6 +45,8 @@ export const AuthProvider = ({ children }) => {
     setDealer(null);
     localStorage.clear();
     handleSocketDisconnect();
+    sessionManager?.disconnect();
+    sessionManager?.unregister();
   };
 
   const handleSocketConnect = (dealerAuthToken: string | null) => {
