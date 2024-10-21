@@ -119,7 +119,7 @@ interface ICall {
 }
 
 function convertDateTime(dateTimeEpoch) {
-  const dateTime = new Date(Number(dateTimeEpoch));
+  const dateTime = new Date(Number(dateTimeEpoch) * 1000);
   const year = dateTime.getFullYear();
   const month = dateTime.getMonth() + 1; // Months are zero-based, so add 1
   const day = dateTime.getDate();
@@ -127,6 +127,18 @@ function convertDateTime(dateTimeEpoch) {
   const minutes = dateTime.getMinutes();
   const seconds = dateTime.getSeconds();
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+}
+
+function formatDuration(seconds) {
+  const hours = Math.floor(seconds / 3600); // Calculate hours
+  const minutes = Math.floor((seconds % 3600) / 60); // Calculate remaining minutes
+  const remainingSeconds = seconds % 60; // Calculate remaining seconds
+
+  // Ensure two-digit formatting for minutes and seconds
+  const formattedMinutes = String(minutes).padStart(2, '0');
+  const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+
+  return `${formattedMinutes}:${formattedSeconds}`;
 }
 
 export default function CallLogDesktop({ table }) {
@@ -137,7 +149,7 @@ export default function CallLogDesktop({ table }) {
   const handleCall = async (receiver = {}) => {
     // 9379 - Jey G
     // 9384 - Sharad
-    console.log('Receiver', receiver);
+    // console.log('Receiver', receiver);
     const { clientnumber, clientid } = receiver;
 
     const customHeaders = [
@@ -171,8 +183,8 @@ export default function CallLogDesktop({ table }) {
         <TableHeader>
           <TableRow>
             <TableHead></TableHead>
-            <TableHead className="w-[250px]">ID</TableHead>
-            <TableHead className="w-[250px]">Name</TableHead>
+            <TableHead>ID</TableHead>
+            <TableHead>Name</TableHead>
             <TableHead>Phone Number</TableHead>
             <TableHead>Duration</TableHead>
             <TableHead>Type</TableHead>
@@ -183,14 +195,16 @@ export default function CallLogDesktop({ table }) {
         </TableHeader>
         <TableBody>
           {rows.map(({ original: call }: ICall) => {
-            console.log('Call', call);
-            const durationEpoch = new Date(
-              Number(call.endtime) - Number(call.starttime)
-            );
-            const duration = `${durationEpoch.getMinutes()}:${durationEpoch.getSeconds()}`;
+            // console.log('Call', call);
+            const durationEpoch = Number(call.endtime) - Number(call.starttime);
+            const duration = formatDuration(durationEpoch);
+
             const formattedStartTime = convertDateTime(call.starttime);
             const formattedEndTime = convertDateTime(call.endtime);
+
             const callStatus = getCallStatus(Number(call.callstatus));
+            // console.log({ formattedStartTime, formattedEndTime });
+            console.log({ duration });
 
             return (
               <TableRow key={call.sessionid}>
@@ -205,7 +219,7 @@ export default function CallLogDesktop({ table }) {
                 </TableCell>
                 <TableCell>{call.sessionid}</TableCell>
                 <TableCell className="font-medium">
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center">
                     {call.clientid && (
                       <Avatar className="h-8 w-8">
                         <AvatarImage

@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
 import CryptoJS from 'crypto-js';
+import { useState, useEffect } from 'react';
 
 export function useLocalStorageState(initialState, key, secretKey) {
   const [value, setValue] = useState(initialState);
+  // console.log('LS ran', { secretKey, key, initialState, value });
 
   useEffect(() => {
     if (!secretKey) return;

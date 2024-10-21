@@ -17,15 +17,15 @@ const sipProviderConfig = {
 
 function App() {
   return (
-    <div className="p-5">
-      <AuthProvider>
-        <SIPProvider
-          options={{
-            domain: sipProviderConfig.domain,
-            webSocketServer: sipProviderConfig.webSocketServer,
-          }}
-        >
-          <Router>
+    <Router>
+      <div className="p-5">
+        <AuthProvider>
+          <SIPProvider
+            options={{
+              domain: sipProviderConfig.domain,
+              webSocketServer: sipProviderConfig.webSocketServer,
+            }}
+          >
             <Routes>
               <Route
                 element={
@@ -39,11 +39,12 @@ function App() {
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
             </Routes>
-          </Router>
-          <Toaster richColors position="top-right" />
-        </SIPProvider>
-      </AuthProvider>
-    </div>
+
+            <Toaster richColors position="top-right" />
+          </SIPProvider>
+        </AuthProvider>
+      </div>
+    </Router>
   );
 }
 

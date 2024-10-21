@@ -1,7 +1,7 @@
 import apiClient from '@/utils/apiClient';
 
 interface IPayload {
-  userId: string;
+  dealerId: string;
   password: string;
 }
 
@@ -11,10 +11,14 @@ export async function loginApi(values: IPayload) {
       `/v1/auth/login?loginType=${1}`,
       values
     );
-    return data;
+    return data.data;
   } catch (error: unknown) {
     console.log(error);
-    throw new Error(error?.response?.data?.message ?? error);
+    throw new Error(
+      error?.response?.data?.error?.message ??
+        error?.response?.data?.message ??
+        error
+    );
   }
 }
 

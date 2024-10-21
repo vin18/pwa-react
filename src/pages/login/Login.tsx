@@ -42,14 +42,14 @@ function Login() {
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      userId: '',
+      dealerId: '',
       password: '',
     },
   });
 
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     const payload = {
-      userId: values.userId.toUpperCase(),
+      dealerId: values.dealerId.toUpperCase(),
       password: values.password,
     };
 
@@ -70,14 +70,13 @@ function Login() {
   useEffect(() => {
     console.log('isAuthenticated', isAuthenticated);
     console.log('redirectToPath', redirectToPath);
-
     if (isAuthenticated && redirectToPath) navigate(`/${redirectToPath}`);
     else if (isAuthenticated) navigate(`/dashboard`);
   }, [isAuthenticated, navigate, redirectToPath]);
 
   return (
     <div className="flex flex-col justify-between h-screen">
-      <Card className="mx-8 lg:mx-auto max-w-sm mt-12">
+      <Card className="mx-8 lg:mx-auto max-w-sm mt-12 shadow-sm rounded-sm">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-primary">
             Login
@@ -91,16 +90,16 @@ function Login() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
               <FormField
                 control={form.control}
-                name="userId"
+                name="dealerId"
                 render={({ field }) => {
                   return (
                     <FormItem>
-                      <FormLabel>User ID</FormLabel>
+                      <FormLabel>Dealer ID</FormLabel>
                       <FormControl className="flex">
                         <>
                           <Input
                             {...field}
-                            placeholder="peter01"
+                            placeholder="Your dealer id"
                             value={field.value.toUpperCase()}
                           />
                         </>

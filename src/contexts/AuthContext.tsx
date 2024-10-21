@@ -1,41 +1,53 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { socket } from '@/utils/socket';
 import { useLocalStorageState } from '@/hooks/useLocalStorageState';
-import { VTS_LOCAL_STORAGE_TOKEN_KEY } from '@/utils/constants';
+import {
+  VTS_LOCAL_STORAGE_DEALER_DATA_KEY,
+  VTS_LOCAL_STORAGE_TOKEN_KEY,
+} from '@/utils/constants';
 import { localStorageApi, logoutApi } from '@/services/apiAuth';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  // const [token, setToken] = useState('');
+  const navigate = useNavigate();
+
   const [secretKey, setSecretKey] = useState('');
-  const [token, setToken] = useLocalStorageState(
-    null,
-    VTS_LOCAL_STORAGE_TOKEN_KEY,
-    secretKey
-  );
-  const [dealerData, setDealerData] = useState({});
+  // const [token, setToken] = useLocalStorageState(
+  //   null,
+  //   VTS_LOCAL_STORAGE_TOKEN_KEY,
+  //   secretKey
+  // );
+  // const [dealer, setDealer] = useLocalStorageState(
+  //   null,
+  //   VTS_LOCAL_STORAGE_DEALER_DATA_KEY,
+  //   secretKey
+  // );
+  const [token, setToken] = useState(null);
+  const [dealer, setDealer] = useState(null);
 
   const isAuthenticated = Boolean(token);
-  // const isAuthenticated = true; // TODO: Remove
 
   const login = (loginData = null) => {
     setToken(loginData?.authToken);
-    setDealerData(loginData?.dealer);
     handleSocketConnect(loginData?.authToken);
+    setDealer(loginData?.dealer);
     setSecretKey(loginData?.lssk);
   };
 
   const logout = async (callApi = true) => {
     if (callApi) await logoutApi();
     setToken(null);
+    setDealer(null);
     localStorage.clear();
     handleSocketDisconnect();
   };
 
-  const handleSocketConnect = (userToken: string | null) => {
+  const handleSocketConnect = (dealerAuthToken: string | null) => {
     socket.auth = {};
-    socket.auth.token = `Bearer ${userToken}`;
+    socket.auth.token = `Bearer ${dealerAuthToken}`;
     socket.connect();
   };
 
@@ -50,7 +62,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     if (!token) getLocalStorageSecretKey();
-  }, [token]);
+  }, [token, navigate]);
 
   const value = {
     isAuthenticated,
@@ -58,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     token,
     setToken,
-    dealerData,
+    dealer,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
