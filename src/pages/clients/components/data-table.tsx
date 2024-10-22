@@ -16,7 +16,6 @@ import {
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableToolbar } from './data-table-toolbar';
 import CallLogDesktop from '@/components/CallLogDesktop';
-import ClientLogDesktop from '@/components/ClientsLogDesktop';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -59,10 +58,10 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
+      <h1 className="text-3xl ml-8">Clients</h1>
       {/* <DataTableToolbar table={table} /> */}
-      {/* <CallLogDesktop table={table} /> */}
-      <ClientLogDesktop table={table} />
-      <DataTablePagination table={table} />
+      <CallLogDesktop table={table} />
+      {/* <DataTablePagination table={table} /> */}
     </div>
   );
 }

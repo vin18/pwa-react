@@ -1,12 +1,10 @@
 import { z } from 'zod';
 
 export const callSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  phoneNumber: z.string(),
-  duration: z.string(),
-  type: z.string(),
-  date: z.string(), // TODO: Make it UTC datetimestamp
+  clientId: z
+    .string()
+    .min(1, 'Client ID should be atleast 1 character')
+    .max(12, 'Client ID cannot exceed 12 characters'),
   remarks: z.string(),
 });
 

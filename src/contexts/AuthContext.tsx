@@ -9,12 +9,14 @@ import {
 } from '@/utils/constants';
 import { localStorageApi, logoutApi } from '@/services/apiAuth';
 import { useSIPProvider } from 'react-sipjs';
+import { useEditHistory } from '@/hooks/useEditCallHistory';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const { sessionManager } = useSIPProvider();
+  const { onClose } = useEditHistory();
 
   const [secretKey, setSecretKey] = useState('');
   // const [token, setToken] = useLocalStorageState(
@@ -47,6 +49,7 @@ export const AuthProvider = ({ children }) => {
     handleSocketDisconnect();
     sessionManager?.disconnect();
     sessionManager?.unregister();
+    onClose();
   };
 
   const handleSocketConnect = (dealerAuthToken: string | null) => {

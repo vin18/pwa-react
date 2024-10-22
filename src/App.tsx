@@ -7,6 +7,8 @@ import Login from '@/pages/login/Login';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AppLayout from '@/components/AppLayout';
 import { AuthProvider } from '@/contexts/AuthContext';
+import Clients from './pages/clients';
+import { DashboardLayout } from './pages/DashboardLayout';
 
 export const SIP_URL = `172.18.2.72:8089`;
 
@@ -34,7 +36,9 @@ function App() {
                   </ProtectedRoute>
                 }
               >
-                <Route path="/dashboard" element={<Dashboard />} />
+                {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+                {/* <Route path="/clients" element={<Clients />} /> */}
+                <Route path="/dashboard" element={<DashboardLayout />} />
               </Route>
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />

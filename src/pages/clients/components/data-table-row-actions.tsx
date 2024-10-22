@@ -17,7 +17,11 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const { onOpen: handleEditDialogOpen } = useEditHistory();
+  const {
+    isOpen,
+    onOpen: handleEditDialogOpen,
+    setData: setUpdateClientDetailsData,
+  } = useEditHistory();
 
   return (
     <DropdownMenu>
@@ -31,7 +35,14 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem onClick={handleEditDialogOpen}>Edit</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            handleEditDialogOpen();
+            setUpdateClientDetailsData(row.original);
+          }}
+        >
+          Edit
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <a href="/VTSLogger_incoming_9386_20241021151717.wav" download>
             Download

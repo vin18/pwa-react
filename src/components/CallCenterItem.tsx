@@ -30,8 +30,6 @@ function CallCenterItem({
   const ringtoneRef = useRef(null);
 
   useEffect(() => {
-    console.log('Sesssionnn state', session.state);
-
     // Ringtone
     if (session.state === 'Initial') {
       if (ringtoneRef?.current) {

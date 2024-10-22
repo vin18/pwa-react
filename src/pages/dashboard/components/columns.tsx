@@ -1,11 +1,13 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { Call } from '../../../schemas/call';
-import { DataTableColumnHeader } from './data-table-column-header';
-import { DataTableRowActions } from './data-table-row-actions';
+import { DataTableColumnHeader } from '../../clients/components/data-table-column-header';
+import { DataTableRowActions } from '../../clients/components/data-table-row-actions';
 import { callStatuses } from '../data/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
+  ArrowDownRight,
+  ArrowUpRight,
   Badge,
   CirclePause,
   PhoneIncoming,
@@ -16,6 +18,7 @@ import { getCallStatus } from '@/utils/callStatus';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import PlayAudio from '@/components/PlayAudio';
+import HandleCall from '@/components/HandleCall';
 
 function convertDateTime(dateTimeEpoch) {
   const dateTime = new Date(Number(dateTimeEpoch) * 1000);
@@ -86,21 +89,29 @@ const getCallTypeColor = (type: string) => {
 
 export const columns: ColumnDef<Call>[] = [
   {
-    accessorKey: 'sessionid',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="ID" />
-    ),
+    accessorKey: 'call',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
     cell: ({ row }) => {
-      return <div className="w-[80px]">{row.getValue('sessionid')}</div>;
+      // console.log('Handle call row', row);
+      return <HandleCall call={row.original} />;
     },
-    enableSorting: false,
-    enableHiding: false,
   },
+  // {
+  //   accessorKey: 'sessionid',
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="ID" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     return <div className="w-[80px]">{row.getValue('sessionid')}</div>;
+  //   },
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: 'clientid',
     header: ({ column }) => (
       <DataTableColumnHeader
-        className="ml-8"
+        className="ml-14"
         column={column}
         title="Client ID"
       />
@@ -108,7 +119,7 @@ export const columns: ColumnDef<Call>[] = [
     cell: ({ row }) => {
       const clientid = row.getValue('clientid');
       return (
-        <div className="flex items-center ml-8">
+        <div className="flex items-center ml-14">
           {clientid && (
             <Avatar className="h-8 w-8">
               <AvatarImage
@@ -135,8 +146,11 @@ export const columns: ColumnDef<Call>[] = [
       <DataTableColumnHeader column={column} title="Phone Number" />
     ),
     cell: ({ row }) => {
+      const callType = row.getValue('calltype');
+
       return (
         <div className="flex space-x-2">
+          <span>{callType != 1 ? <ArrowDownRight /> : <ArrowUpRight />}</span>
           <span className="max-w-[500px] truncate font-medium">
             {row.getValue('phonenumber')}
           </span>
@@ -248,8 +262,25 @@ export const columns: ColumnDef<Call>[] = [
     },
   },
   {
-    accessorKey: 'actions',
-    // header: ({ column }) => <DataTableColumnHeader column={column} />,
+    accessorKey: 'remarks',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Remarks" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {row.getValue('remarks')}
+          </span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'status',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Call Recording" />
+    ),
     cell: ({ row }) => {
       return <PlayAudio />;
     },
