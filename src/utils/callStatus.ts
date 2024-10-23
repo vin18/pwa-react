@@ -32,3 +32,16 @@ export function getCallStatus(state: CallStatusState) {
       return 'terminated';
   }
 }
+
+export function getCallStatusDisplayText(
+  state: CallStatusState,
+  answered: number
+) {
+  if (state == 5 && answered === 0) {
+    return 'Unanswered';
+  } else if (state == 5 && answered === 1) {
+    return 'Answered';
+  }
+
+  return 'Missed';
+}

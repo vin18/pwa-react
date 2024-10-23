@@ -10,7 +10,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import Clients from './pages/clients';
 import { DashboardLayout } from './pages/DashboardLayout';
 
-export const SIP_URL = `172.18.2.72:8089`;
+export const SIP_URL = `172.18.2.147:8089`;
 
 const sipProviderConfig = {
   domain: SIP_URL,

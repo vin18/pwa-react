@@ -201,86 +201,8 @@ export default function CallLogDesktop({ table }) {
               })}
             </TableRow>
           ))}
-
-          {/* <TableRow>
-            <TableHead></TableHead>
-            <TableHead>ID</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Phone Number</TableHead>
-            <TableHead>Duration</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Start Time</TableHead>
-            <TableHead>End Time</TableHead>
-            <TableHead>Remarks</TableHead>
-          </TableRow> */}
         </TableHeader>
         <TableBody>
-          {/* {rows.map(({ original: call }: ICall) => {
-            // console.log('Call', call);
-            const durationEpoch = Number(call.endtime) - Number(call.starttime);
-            const duration = formatDuration(durationEpoch);
-
-            const formattedStartTime = convertDateTime(call.starttime);
-            const formattedEndTime = convertDateTime(call.endtime);
-
-            const callStatus = getCallStatus(Number(call.callstatus));
-            // console.log({ formattedStartTime, formattedEndTime });
-            console.log({ duration });
-
-            return (
-              <TableRow key={call.sessionid}>
-                <TableCell>
-                  <Button
-                    onClick={() => handleCall(call)}
-                    className="p-2"
-                    variant="ghost"
-                  >
-                    <PhoneIcon className="h-4 w-4 cursor-pointer" />
-                  </Button>
-                </TableCell>
-                <TableCell>{call.sessionid}</TableCell>
-                <TableCell className="font-medium">
-                  <div className="flex items-center">
-                    {call.clientid && (
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage
-                          src={`https://api.dicebear.com/6.x/initials/svg?seed=${call.clientid}`}
-                          alt={call.clientid}
-                        />
-                        <AvatarFallback>
-                          {call.clientid
-                            .split(' ')
-                            .map((n) => n[0])
-                            .join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                    )}
-                    <span>{call.clientid}</span>
-                  </div>
-                </TableCell>
-                <TableCell>{call.phonenumber}</TableCell>
-                <TableCell>{duration}</TableCell>
-                <TableCell>
-                  <Badge
-                    variant="secondary"
-                    className={getCallTypeColor(callStatus.toLowerCase())}
-                  >
-                    <span className="flex items-center space-x-1">
-                      {getCallIcon(callStatus.toLowerCase())}&nbsp;
-                      <span>
-                        {callStatus.charAt(0).toUpperCase() +
-                          callStatus.slice(1)}
-                      </span>
-                    </span>
-                  </Badge>
-                </TableCell>
-                <TableCell>{formattedStartTime}</TableCell>
-                <TableCell>{formattedEndTime}</TableCell>
-                <TableCell>{call.remarks}</TableCell>
-              </TableRow>
-            );
-          })} */}
-
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow

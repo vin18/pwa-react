@@ -14,7 +14,11 @@ function Clients() {
     fetchClients();
   }, []);
 
-  return <DataTable data={clients} columns={columns} />;
+  return (
+    <div className="hidden h-full flex-1 flex-col p-8 pt-0 mb-4 md:flex">
+      <DataTable data={clients} columns={columns} />
+    </div>
+  );
 }
 
 export default Clients;

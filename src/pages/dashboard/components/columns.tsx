@@ -3,22 +3,13 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Call } from '../../../schemas/call';
 import { DataTableColumnHeader } from '../../clients/components/data-table-column-header';
 import { DataTableRowActions } from '../../clients/components/data-table-row-actions';
-import { callStatuses } from '../data/data';
+import { callStatuses, callStatuses1 } from '../data/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  Badge,
-  CirclePause,
-  PhoneIncoming,
-  PhoneMissed,
-  PlayIcon,
-} from 'lucide-react';
-import { getCallStatus } from '@/utils/callStatus';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { PhoneIncoming, PhoneMissed } from 'lucide-react';
+import { getCallStatus, getCallStatusDisplayText } from '@/utils/callStatus';
 import PlayAudio from '@/components/PlayAudio';
 import HandleCall from '@/components/HandleCall';
+import { Badge } from '@/components/ui/badge';
 
 function convertDateTime(dateTimeEpoch) {
   const dateTime = new Date(Number(dateTimeEpoch) * 1000);
@@ -28,7 +19,7 @@ function convertDateTime(dateTimeEpoch) {
   const hours = dateTime.getHours();
   const minutes = dateTime.getMinutes();
   const seconds = dateTime.getSeconds();
-  return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+  return `${day}-${month}-${year} ${hours}:${minutes}`;
 }
 
 function formatDuration(seconds) {
@@ -108,6 +99,16 @@ export const columns: ColumnDef<Call>[] = [
   //   enableHiding: false,
   // },
   {
+    accessorKey: 'dealerId',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Dealer ID" />
+    ),
+    cell: ({ row }) => {
+      const dealerid = row.original.dealerid;
+      return <p>{dealerid}</p>;
+    },
+  },
+  {
     accessorKey: 'clientid',
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -149,11 +150,9 @@ export const columns: ColumnDef<Call>[] = [
       const callType = row.getValue('calltype');
 
       return (
-        <div className="flex space-x-2">
-          <span>{callType != 1 ? <ArrowDownRight /> : <ArrowUpRight />}</span>
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue('phonenumber')}
-          </span>
+        <div className="flex ml-5">
+          {/* <span>{callType != 1 ? <ArrowDownRight /> : <ArrowUpRight />}</span> */}
+          <span className="font-medium">{row.getValue('phonenumber')}</span>
         </div>
       );
     },
@@ -188,36 +187,46 @@ export const columns: ColumnDef<Call>[] = [
       <DataTableColumnHeader column={column} title="Type" />
     ),
     cell: ({ row }) => {
+      console.log('Row', row);
       const callStatus = Number(row.getValue('callstatus'));
-      const callStatusText: string = getCallStatus(callStatus);
-      const status = callStatuses.find(
-        (status) => status.callStatus === Number(row.getValue('callstatus'))
-      );
 
-      if (!status) {
-        return null;
-      }
+      const callStatusText: string = getCallStatus(callStatus);
+      const callDisplayText = getCallStatusDisplayText(
+        callStatus,
+        row.original.answered
+      );
+      const callTypeColor = getCallTypeColor(callStatusText);
+
+      // const status = callStatuses1.find(
+      //   (status) =>
+      //     status.callStatus ==
+      //     Number(
+      //       row.getValue('callstatus') &&
+      //         status.answered == row.getValue('answered')
+      //     )
+      // );
+
+      // if (!status) {
+      //   return null;
+      // }
 
       return (
         <div className="flex w-[100px] items-center">
           {/* {status.icon && (
             <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-          )} */}
-          <span>{status.label}</span>
+          )}
+          <span>{status.label}</span> */}
           {/* Incoming */}
 
-          {/* <Badge
-            variant="secondary"
-            className={getCallTypeColor(callStatusText.toLowerCase())}
-          >
+          <Badge variant="secondary">
             <span className="flex items-center space-x-1">
-              {getCallIcon(callStatusText.toLowerCase())}&nbsp;
+              {/* {getCallIcon(callStatusText.toLowerCase())}&nbsp; */}
               <span>
-                {callStatusText.charAt(0).toUpperCase() +
-                  callStatusText.slice(1)}
+                {callDisplayText.charAt(0).toUpperCase() +
+                  callDisplayText.slice(1)}
               </span>
             </span>
-          </Badge> */}
+          </Badge>
         </div>
       );
     },

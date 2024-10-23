@@ -13,22 +13,50 @@ import {
 } from '@/utils/constants';
 import { socket } from '@/utils/socket';
 import CallCenterItem from '@/components/CallCenterItem';
+import { useAuth } from '@/contexts/AuthContext';
 
 export function DashboardLayout() {
   const [callStatus, setCallStatus] = useState({ state: '', message: '' });
-  const { registerStatus, sessionManager, sessions } = useSIPProvider();
+  const [calls, setCalls] = useState([]);
+  const { registerStatus, sessionManager } = useSIPProvider();
+  const { dealer } = useAuth();
   useCallManager();
 
   const activeSessionId =
-    Object.keys(sessions)[Object.keys(sessions)?.length - 1];
+    sessionManager?.managedSessions[sessionManager?.managedSessions?.length - 1]
+      ?.session?.id;
+
+  useEffect(() => {
+    setCallStatus([{ state: '', message: '' }]);
+  }, [sessionManager?.managedSessions]);
 
   useEffect(() => {
     socket.on(VTS_SOCKET_MESSAGE_CHANNEL, (data) => {
       if (data.code === VTS_SOCKET_CALL_CHANNEL) {
         console.log('Socket data received: ', data);
         const callMsg = { state: '', message: '' };
-        const { CallStatus, ClientId, ClientNumber } = data.message;
-        callMsg['payload'] = { CallStatus, ClientId, ClientNumber };
+        const {
+          CallStatus,
+          ClientId,
+          ClientNumber,
+          Answered,
+          CallType,
+          DealerId,
+          DealerNumber,
+          EndTime,
+          Recording,
+          SessionId,
+          StartTime,
+        } = data.message;
+
+        if (DealerId !== dealer?.dealerid) return;
+
+        callMsg['payload'] = {
+          CallStatus,
+          ClientId,
+          ClientNumber,
+        };
+
         switch (CallStatus) {
           case CallStatusState.INCOMING:
           case CallStatusState.ATTEMPTING:
@@ -58,13 +86,30 @@ export function DashboardLayout() {
             break;
         }
 
-        // // TODO:
-        // const callMsg = {
-        //   state: 'incoming',
-        //   message: 'Incoming call from Sharad..',
-        // };
-        console.log('Packet formed', callMsg);
+        // console.log('Packet formed', callMsg);
         setCallStatus(callMsg);
+
+        if (
+          CallStatus == CallStatusState.HANGUP ||
+          CallStatus == CallStatusState.MISSED
+        ) {
+          const callPayload = {
+            sessionid: SessionId,
+            starttime: StartTime,
+            endtime: EndTime,
+            callstatus: CallStatus,
+            clientid: ClientId,
+            remarks: '',
+            phonenumber: ClientNumber,
+            createdat: '',
+            dealerid: DealerId,
+            recording: Recording,
+            answered: Answered,
+            dealernumber: DealerNumber,
+            calltype: CallType,
+          };
+          setCalls((prevCalls) => [callPayload, ...prevCalls]);
+        }
       }
     });
 
@@ -75,7 +120,7 @@ export function DashboardLayout() {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between my-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Welcome back!</h2>
           <p className="text-muted-foreground">
@@ -91,7 +136,7 @@ export function DashboardLayout() {
             : 'text-green-500'
         }`}
       >
-        Dealer is&nbsp;
+        {dealer?.dealerid} is&nbsp;
         {registerStatus === RegisterStatus.UNREGISTERED
           ? 'unregistered'
           : 'registered'}{' '}
@@ -112,7 +157,11 @@ export function DashboardLayout() {
         </TabsList>
         <TabsContent value="recent-calls">
           <Card>
-            <Dashboard />
+            <Dashboard
+              calls={calls}
+              setCalls={setCalls}
+              setCallStatus={setCallStatus}
+            />
           </Card>
         </TabsContent>
         <TabsContent value="clients">

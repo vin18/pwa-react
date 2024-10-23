@@ -12,20 +12,8 @@ function CallCenterItem({
   callStatus = { state: '', message: '', payload: {} },
   setCallStatus,
 }) {
-  const {
-    isHeld,
-    isMuted,
-    decline,
-    hangup,
-    hold,
-    mute,
-    answer,
-    session,
-    unhold,
-    unmute,
-    direction,
-    timer,
-  } = useSessionCall(sessionId);
+  const { decline, hangup, answer, session, direction } =
+    useSessionCall(sessionId);
 
   const ringtoneRef = useRef(null);
 
@@ -50,39 +38,43 @@ function CallCenterItem({
       direction === CallSessionDirection.INCOMING
     ) {
       toast.custom(
-        (t) => (
-          <div className="bg-gray-100  p-4  border border-gray-200 rounded shadow">
-            {callStatus?.payload?.ClientId ?? callStatus?.payload?.ClientNumber}
-            <div className="flex">
-              <PhoneCallIcon className="w-4 mr-2" />
-              <p>Incoming call..</p>
+        (t) => {
+          return (
+            <div className="bg-gray-100  p-4  border border-gray-200 rounded shadow">
+              {callStatus?.payload?.ClientId ??
+                callStatus?.payload?.ClientNumber}
+              <div className="flex">
+                <PhoneCallIcon className="w-4 mr-2" />
+                <p>Incoming call..</p>
+              </div>
+              <div className="space-x-4 mt-2 ">
+                <Button
+                  variant="success"
+                  onClick={() => {
+                    console.log('Clicked on answer');
+                    answer();
+                    ringtoneRef.current.pause();
+                    toast.dismiss();
+                  }}
+                >
+                  Accept
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    console.log('Clicked on decline');
+                    decline();
+                    ringtoneRef.current.pause();
+                    toast.dismiss();
+                  }}
+                >
+                  Decline
+                </Button>
+              </div>
             </div>
-            <div className="space-x-4 mt-2 ">
-              <Button
-                variant="success"
-                onClick={() => {
-                  console.log('Clicked on answer');
-                  answer();
-                  ringtoneRef.current.pause();
-                  toast.dismiss();
-                }}
-              >
-                Accept
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() => {
-                  console.log('Clicked on decline');
-                  decline();
-                  ringtoneRef.current.pause();
-                  toast.dismiss();
-                }}
-              >
-                Decline
-              </Button>
-            </div>
-          </div>
-        ),
+          );
+        },
+
         { duration: 20000 }
       );
     }
@@ -130,11 +122,19 @@ function CallCenterItem({
         </>
       )} */}
 
-      {!['Terminating', 'Terminated'].includes(session.state) && (
+      {'Established' === session.state && (
+        <>
+          <Button variant="destructive" onClick={hangup}>
+            Hangup
+          </Button>
+        </>
+      )}
+
+      {/* { 'Established' === session.state) && (
         <Button className="mb-4 mt-2" onClick={hangup}>
           Hang Up
         </Button>
-      )}
+      )} */}
 
       <audio ref={ringtoneRef} src="/sounds/ringtone.wav" preload="auto" loop />
     </div>

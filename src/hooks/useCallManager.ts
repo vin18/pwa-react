@@ -1,7 +1,6 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useEffect } from 'react';
 import { useSIPProvider } from 'react-sipjs';
-import { toast } from 'sonner';
 
 function useCallManager() {
   const { dealer } = useAuth();
@@ -13,6 +12,7 @@ function useCallManager() {
   // };
 
   const { connectAndRegister, sessionManager } = useSIPProvider();
+  console.log('managedSessions', sessionManager?.managedSessions);
 
   useEffect(() => {
     if (dealer) {

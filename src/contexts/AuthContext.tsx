@@ -19,6 +19,14 @@ export const AuthProvider = ({ children }) => {
   const { onClose } = useEditHistory();
 
   const [secretKey, setSecretKey] = useState('');
+  const [token, setToken] = useLocalStorageState(
+    null,
+    VTS_LOCAL_STORAGE_TOKEN_KEY
+  );
+  const [dealer, setDealer] = useLocalStorageState(
+    null,
+    VTS_LOCAL_STORAGE_DEALER_DATA_KEY
+  );
   // const [token, setToken] = useLocalStorageState(
   //   null,
   //   VTS_LOCAL_STORAGE_TOKEN_KEY,
@@ -29,8 +37,8 @@ export const AuthProvider = ({ children }) => {
   //   VTS_LOCAL_STORAGE_DEALER_DATA_KEY,
   //   secretKey
   // );
-  const [token, setToken] = useState(null);
-  const [dealer, setDealer] = useState(null);
+  // const [token, setToken] = useState(null);
+  // const [dealer, setDealer] = useState(null);
 
   const isAuthenticated = Boolean(token);
 
