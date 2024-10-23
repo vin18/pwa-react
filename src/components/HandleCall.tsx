@@ -13,14 +13,13 @@ function HandleCall({ call }) {
     // 9379 - Jey G
     // 9384 - Sharad
     // console.log('Receiver', receiver);
-    const { phonenumber, dealer1number, registeredphonenumber, prefdealer1 } =
-      receiver;
+    const { phonenumber, registeredphonenumber, clientid } = receiver;
 
     const customHeaders = [
       `DI: ${dealer.dealerid}`,
       `DN: ${dealer.phonenumber}`,
       `CN: ${phonenumber ?? registeredphonenumber}`,
-      `CI: ${prefdealer1}`,
+      `CI: ${clientid}`,
     ];
 
     const customHeaders1 = [

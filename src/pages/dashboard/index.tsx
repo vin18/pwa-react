@@ -7,14 +7,7 @@ import { getCallsApi } from '@/services/apiCalls';
 import usePageRefresh from '@/hooks/usePageRefresh';
 import { EditCallerInfoDialog } from '@/components/EditCallerInfoDialog';
 
-function Dashboard({ calls, setCalls, setCallStatus }) {
-  const { sessionManager, sessions } = useSIPProvider();
-  usePageRefresh();
-
-  // console.log('Session manager', sessionManager?.managedSessions);
-  // console.log('Sessions', sessions);
-  // console.log('calls', calls);
-
+function Dashboard({ calls, setCalls }) {
   useEffect(() => {
     async function fetchCalls() {
       const data = await getCallsApi();

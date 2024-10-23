@@ -4,14 +4,13 @@ import SideMenu from '@/components/SideMenu';
 import Footer from '@/components/Footer';
 import { useEffect } from 'react';
 import { socket } from '@/utils/socket';
-import {
-  VTS_SOCKET_CALL_CHANNEL,
-  VTS_SOCKET_MESSAGE_CHANNEL,
-} from '@/utils/constants';
 import { useAuth } from '@/contexts/AuthContext';
+import usePageRefresh from '@/hooks/usePageRefresh';
 
 function AppLayout() {
   const { isAuthenticated, logout } = useAuth();
+  // TODO: Uncomment after testing
+  // usePageRefresh();
 
   useEffect(() => {
     if (socket) {
@@ -33,7 +32,7 @@ function AppLayout() {
           <Outlet />
         </div>
       </div>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }

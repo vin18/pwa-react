@@ -3,10 +3,9 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Call } from '../../../schemas/call';
 import { DataTableColumnHeader } from '../../clients/components/data-table-column-header';
 import { DataTableRowActions } from '../../clients/components/data-table-row-actions';
-import { callStatuses, callStatuses1 } from '../data/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { PhoneIncoming, PhoneMissed } from 'lucide-react';
-import { getCallStatus, getCallStatusDisplayText } from '@/utils/callStatus';
+import { PhoneIncoming, PhoneOutgoing } from 'lucide-react';
+import { getCallStatus } from '@/utils/callStatus';
 import PlayAudio from '@/components/PlayAudio';
 import HandleCall from '@/components/HandleCall';
 import { Badge } from '@/components/ui/badge';
@@ -34,70 +33,52 @@ function formatDuration(seconds) {
   return `${formattedMinutes}:${formattedSeconds}`;
 }
 
-const getCallIcon = (type: string) => {
-  switch (type) {
-    case 'incoming':
-    case 'accepted':
-    case 'outgoing':
-    case 'initial':
+const getCallIcon = (callType: string) => {
+  switch (Number(callType)) {
+    case 1:
       return <PhoneIncoming className="h-4 w-4 text-green-500" />;
 
-    case 'missed':
-    case 'rejected':
-    case 'terminated':
-      return <PhoneMissed className="h-4 w-4 text-red-500" />;
-
-    case 'in progress':
-    case 'established':
-      return <PhoneMissed className="h-4 w-4 text-yellow-500" />;
-
-    // default:
-    //   return <Phone className="h-4 w-4" />;
-  }
-};
-
-const getCallTypeColor = (type: string) => {
-  switch (type) {
-    case 'incoming':
-    case 'accepted':
-    case 'outgoing':
-    case 'initial':
-      return 'bg-green-100 text-green-800';
-
-    case 'missed':
-    case 'rejected':
-    case 'terminated':
-      return 'bg-red-100 text-red-800';
-
-    case 'in progress':
-    case 'established':
-      return 'bg-yellow-100 text-yellow-800';
-
-    default:
-      return 'bg-gray-100 text-gray-800';
+    case 2:
+      return <PhoneOutgoing className="h-4 w-4 text-blue-500" />;
   }
 };
 
 export const columns: ColumnDef<Call>[] = [
   {
-    accessorKey: 'call',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
+    accessorKey: 'status',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
     cell: ({ row }) => {
-      // console.log('Handle call row', row);
-      return <HandleCall call={row.original} />;
+      const callStatus = getCallStatus(
+        row.original.callstatus,
+        row.original.calltype
+      );
+      const callTypeIcon = getCallIcon(row.original.calltype);
+
+      return (
+        <div className="flex">
+          <span className="mr-4">{callTypeIcon}</span>
+          <Badge variant="secondary" className={callStatus.bgColor}>
+            <span className="flex items-center space-x-1">
+              <span>{callStatus.statusText}</span>
+            </span>
+          </Badge>
+        </div>
+      );
     },
   },
-  // {
-  //   accessorKey: 'sessionid',
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="ID" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     return <div className="w-[80px]">{row.getValue('sessionid')}</div>;
-  //   },
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
+  {
+    accessorKey: 'actions',
+    // header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
+    cell: ({ row }) => {
+      return (
+        <div className="flex">
+          <HandleCall call={row.original} />
+        </div>
+      );
+    },
+  },
   {
     accessorKey: 'dealerId',
     header: ({ column }) => (
@@ -147,8 +128,6 @@ export const columns: ColumnDef<Call>[] = [
       <DataTableColumnHeader column={column} title="Phone Number" />
     ),
     cell: ({ row }) => {
-      const callType = row.getValue('calltype');
-
       return (
         <div className="flex ml-5">
           {/* <span>{callType != 1 ? <ArrowDownRight /> : <ArrowUpRight />}</span> */}
@@ -163,6 +142,8 @@ export const columns: ColumnDef<Call>[] = [
       <DataTableColumnHeader column={column} title="Duration" />
     ),
     cell: ({ row }) => {
+      // const callType = row.original.calltype;
+
       const durationEpoch =
         Number(row.getValue('endtime')) - Number(row.getValue('starttime'));
       let duration = formatDuration(durationEpoch);
@@ -181,59 +162,68 @@ export const columns: ColumnDef<Call>[] = [
       );
     },
   },
-  {
-    accessorKey: 'callstatus',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Type" />
-    ),
-    cell: ({ row }) => {
-      console.log('Row', row);
-      const callStatus = Number(row.getValue('callstatus'));
+  // {
+  //   accessorKey: 'callstatus',
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Type" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     console.log('Row', row);
+  //     const callStatus = Number(row.getValue('callstatus'));
+  //     const callType = row.original.calltype;
+  //     const answered = row.original.answered;
 
-      const callStatusText: string = getCallStatus(callStatus);
-      const callDisplayText = getCallStatusDisplayText(
-        callStatus,
-        row.original.answered
-      );
-      const callTypeColor = getCallTypeColor(callStatusText);
+  //     // const callDisplayText = getCallStatusDisplayText(callStatus, answered);
 
-      // const status = callStatuses1.find(
-      //   (status) =>
-      //     status.callStatus ==
-      //     Number(
-      //       row.getValue('callstatus') &&
-      //         status.answered == row.getValue('answered')
-      //     )
-      // );
+  //     // const status = callStatuses1.find(
+  //     //   (status) =>
+  //     //     status.callStatus ==
+  //     //     Number(
+  //     //       row.getValue('callstatus') &&
+  //     //         status.answered == row.getValue('answered')
+  //     //     )
+  //     // );
 
-      // if (!status) {
-      //   return null;
-      // }
+  //     // if (!status) {
+  //     //   return null;
+  //     // }
 
-      return (
-        <div className="flex w-[100px] items-center">
-          {/* {status.icon && (
-            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-          )}
-          <span>{status.label}</span> */}
-          {/* Incoming */}
+  //     return (
+  //       <Badge variant="secondary" className={getCallTypeColor(callType)}>
+  //         <span className="flex items-center space-x-1">
+  //           {getCallIcon(callType)}
+  //           <span>
+  //             {callDisplayText.charAt(0).toUpperCase() +
+  //               callDisplayText.slice(1)}
+  //           </span>
+  //         </span>
+  //       </Badge>
+  //     );
 
-          <Badge variant="secondary">
-            <span className="flex items-center space-x-1">
-              {/* {getCallIcon(callStatusText.toLowerCase())}&nbsp; */}
-              <span>
-                {callDisplayText.charAt(0).toUpperCase() +
-                  callDisplayText.slice(1)}
-              </span>
-            </span>
-          </Badge>
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-  },
+  //     return (
+  //       <div className="flex w-[100px] items-center">
+  //         {/* {status.icon && (
+  //           <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+  //         )}
+  //         <span>{status.label}</span> */}
+  //         {/* Incoming */}
+
+  //         <Badge variant="secondary">
+  //           <span className="flex items-center space-x-1">
+  //             {/* {getCallIcon(callStatusText.toLowerCase())}&nbsp; */}
+  //             <span>
+  //               {callDisplayText.charAt(0).toUpperCase() +
+  //                 callDisplayText.slice(1)}
+  //             </span>
+  //           </span>
+  //         </Badge>
+  //       </div>
+  //     );
+  //   },
+  //   filterFn: (row, id, value) => {
+  //     return value.includes(row.getValue(id));
+  //   },
+  // },
   {
     accessorKey: 'starttime',
     header: ({ column }) => (

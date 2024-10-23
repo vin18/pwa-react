@@ -27,6 +27,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { loginFormSchema } from '@/schemas/user';
 import { loginApi } from '@/services/apiAuth';
 import { useAxiosWithAuth } from '@/utils/apiClient';
+import Footer from '@/components/Footer';
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -161,6 +162,7 @@ function Login() {
           </Form>
         </CardContent>
       </Card>
+      <Footer />
     </div>
   );
 }

@@ -4,15 +4,10 @@ import { useSIPProvider } from 'react-sipjs';
 
 function useCallManager() {
   const { dealer } = useAuth();
-  console.log('Dealer from call manager', dealer);
-
-  // const dealerConfig = {
-  //   username: dealer?.phonenumber,
-  //   password: dealer?.phonenumber,
-  // };
-
-  const { connectAndRegister, sessionManager } = useSIPProvider();
+  const { connectAndRegister, sessionManager, sessions } = useSIPProvider();
   console.log('managedSessions', sessionManager?.managedSessions);
+  console.log('sessions', sessions);
+  console.log('sessionManager', sessionManager);
 
   useEffect(() => {
     if (dealer) {

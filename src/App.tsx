@@ -2,13 +2,11 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { SIPProvider } from 'react-sipjs';
 
-import Dashboard from '@/pages/dashboard';
+import { DashboardLayout } from '@/pages/DashboardLayout';
 import Login from '@/pages/login/Login';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AppLayout from '@/components/AppLayout';
 import { AuthProvider } from '@/contexts/AuthContext';
-import Clients from './pages/clients';
-import { DashboardLayout } from './pages/DashboardLayout';
 
 export const SIP_URL = `172.18.2.147:8089`;
 

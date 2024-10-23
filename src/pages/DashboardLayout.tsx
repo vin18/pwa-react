@@ -18,16 +18,15 @@ import { useAuth } from '@/contexts/AuthContext';
 export function DashboardLayout() {
   const [callStatus, setCallStatus] = useState({ state: '', message: '' });
   const [calls, setCalls] = useState([]);
+
   const { registerStatus, sessionManager } = useSIPProvider();
   const { dealer } = useAuth();
   useCallManager();
 
-  const activeSessionId =
-    sessionManager?.managedSessions[sessionManager?.managedSessions?.length - 1]
-      ?.session?.id;
+  const activeSessionId = sessionManager?.managedSessions[0]?.session?.id;
 
   useEffect(() => {
-    setCallStatus([{ state: '', message: '' }]);
+    setCallStatus({ state: '', message: '' });
   }, [sessionManager?.managedSessions]);
 
   useEffect(() => {
@@ -55,26 +54,34 @@ export function DashboardLayout() {
           CallStatus,
           ClientId,
           ClientNumber,
+          CallType,
         };
 
         switch (CallStatus) {
-          case CallStatusState.INCOMING:
-          case CallStatusState.ATTEMPTING:
-            callMsg['state'] = 'Initial';
-            callMsg['message'] = `Incoming call from ${
-              ClientId ? ClientId : ClientNumber
-            }`;
+          case CallStatusState.INCOMING: {
+            if (CallType == 1) {
+              callMsg['state'] = 'Initial';
+              callMsg['message'] = `Incoming call from ${
+                ClientId ? ClientId : ClientNumber
+              }`;
+            } else if (CallType == 2) {
+              callMsg['state'] = 'Initial';
+              callMsg['message'] = `Outgoing call to ${
+                ClientId ? ClientId : ClientNumber
+              }`;
+            }
             break;
+          }
 
-          case CallStatusState.CONNECTED:
+          case CallStatusState.ANSWERED:
             callMsg['state'] = 'Established';
             callMsg['message'] = `Call is in progress with ${
               ClientId ? ClientId : ClientNumber
             }`;
             break;
 
-          case CallStatusState.MISSED:
-            callMsg['state'] = 'Established';
+          case CallStatusState.UNANSWERED:
+            callMsg['state'] = 'Missed';
             callMsg['message'] = `Missed call from ${ClientId ?? ClientNumber}`;
             break;
 
@@ -86,7 +93,7 @@ export function DashboardLayout() {
             break;
         }
 
-        // console.log('Packet formed', callMsg);
+        console.log('Banner packet formed', callMsg);
         setCallStatus(callMsg);
 
         if (
@@ -108,7 +115,12 @@ export function DashboardLayout() {
             dealernumber: DealerNumber,
             calltype: CallType,
           };
-          setCalls((prevCalls) => [callPayload, ...prevCalls]);
+
+          if (calls?.length > 0) {
+            setCalls((prevCalls) => [callPayload, ...prevCalls]);
+          } else {
+            setCalls([callPayload]);
+          }
         }
       }
     });
@@ -116,7 +128,7 @@ export function DashboardLayout() {
     return () => {
       socket.off(VTS_SOCKET_MESSAGE_CHANNEL);
     };
-  }, []);
+  }, [dealer?.dealerid]);
 
   return (
     <>

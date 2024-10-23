@@ -12,8 +12,13 @@ function CallCenterItem({
   callStatus = { state: '', message: '', payload: {} },
   setCallStatus,
 }) {
-  const { decline, hangup, answer, session, direction } =
-    useSessionCall(sessionId);
+  const {
+    decline,
+    hangup,
+    answer,
+    session,
+    direction = '',
+  } = useSessionCall(sessionId);
 
   const ringtoneRef = useRef(null);
 
@@ -33,59 +38,69 @@ function CallCenterItem({
     }
 
     // Show call notification
-    if (
-      session.state === 'Initial' &&
-      direction === CallSessionDirection.INCOMING
-    ) {
-      toast.custom(
-        (t) => {
-          return (
-            <div className="bg-gray-100  p-4  border border-gray-200 rounded shadow">
-              {callStatus?.payload?.ClientId ??
-                callStatus?.payload?.ClientNumber}
-              <div className="flex">
-                <PhoneCallIcon className="w-4 mr-2" />
-                <p>Incoming call..</p>
-              </div>
-              <div className="space-x-4 mt-2 ">
-                <Button
-                  variant="success"
-                  onClick={() => {
-                    console.log('Clicked on answer');
-                    answer();
-                    ringtoneRef.current.pause();
-                    toast.dismiss();
-                  }}
-                >
-                  Accept
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => {
-                    console.log('Clicked on decline');
-                    decline();
-                    ringtoneRef.current.pause();
-                    toast.dismiss();
-                  }}
-                >
-                  Decline
-                </Button>
-              </div>
-            </div>
-          );
-        },
+    // if (
+    //   session.state === 'Initial' &&
+    //   direction === CallSessionDirection.INCOMING
+    // ) {
+    //   toast.custom(
+    //     (t) => {
+    //       return (
+    //         <div className="bg-gray-100  p-4  border border-gray-200 rounded shadow">
+    //           {callStatus?.payload?.ClientId ??
+    //             callStatus?.payload?.ClientNumber}
+    //           <div className="flex">
+    //             <PhoneCallIcon className="w-4 mr-2" />
+    //             <p>Incoming call..</p>
+    //           </div>
+    //           <div className="space-x-4 mt-2 ">
+    //             <Button
+    //               variant="success"
+    //               onClick={() => {
+    //                 if (!session) {
+    //                   toast.info('Invalid session');
+    //                   toast.dismiss(t.id);
+    //                   return;
+    //                 }
+    //                 answer();
+    //                 ringtoneRef.current.pause();
+    //                 toast.dismiss();
+    //               }}
+    //             >
+    //               Accept
+    //             </Button>
+    //             <Button
+    //               variant="destructive"
+    //               onClick={() => {
+    //                 if (!session) {
+    //                   toast.info('Invalid session');
+    //                   toast.dismiss(t.id);
+    //                   return;
+    //                 }
+    //                 decline();
+    //                 ringtoneRef.current.pause();
+    //                 toast.dismiss();
+    //               }}
+    //             >
+    //               Decline
+    //             </Button>
+    //           </div>
+    //         </div>
+    //       );
+    //     },
 
-        { duration: 20000 }
-      );
-    }
+    //     { duration: 20000 }
+    //   );
+    // }
 
     // Hide status banner after certain interval
-    if (session?.state === 'Terminated') {
-      setTimeout(() => {
-        setCallStatus({ state: '', message: '' });
-      }, 10000);
-    }
+    // if (session?.state === 'Terminated') {
+    //   setTimeout(() => {
+    //     setCallStatus({ state: '', message: '' });
+    //   }, 3000);
+    // }
   }, [session.state, callStatus.state]);
+
+  // console.log('Call Status', callStatus);
 
   return (
     <div>
@@ -104,37 +119,26 @@ function CallCenterItem({
         </div>
       )}
 
-      {/* {session.state === 'Initial' && (
-        <>
-          <Button onClick={answer}>Answer</Button>
-          <Button onClick={decline}>Decline</Button>
-        </>
-      )} */}
+      {session.state === 'Initial' &&
+        direction === CallSessionDirection.INCOMING && (
+          <>
+            <Button variant="success" className="mr-4" onClick={answer}>
+              Answer
+            </Button>
+            <Button variant="destructive" onClick={decline}>
+              Decline
+            </Button>
+          </>
+        )}
 
-      {/* {'Established' === session.state && (
-        <>
-          <Button onClick={isHeld ? unhold : hold}>
-            {isHeld ? 'Unhold' : 'Hold'}
-          </Button>
-          <Button onClick={isMuted ? unmute : mute}>
-            {isMuted ? 'Ummute' : 'Mute'}
-          </Button>
-        </>
-      )} */}
-
-      {'Established' === session.state && (
+      {('Established' === session.state ||
+        direction === CallSessionDirection.OUTGOING) && (
         <>
           <Button variant="destructive" onClick={hangup}>
             Hangup
           </Button>
         </>
       )}
-
-      {/* { 'Established' === session.state) && (
-        <Button className="mb-4 mt-2" onClick={hangup}>
-          Hang Up
-        </Button>
-      )} */}
 
       <audio ref={ringtoneRef} src="/sounds/ringtone.wav" preload="auto" loop />
     </div>
