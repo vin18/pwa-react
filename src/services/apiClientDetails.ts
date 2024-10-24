@@ -12,7 +12,7 @@ export async function getClientsApi() {
 
 export async function updateClientRecordsApi(clientDetailsPayload) {
   try {
-    const { data } = await apiClient.patch(
+    const { data } = await apiClient.post(
       `/v1/calls/updateClientDetails`,
       clientDetailsPayload
     );

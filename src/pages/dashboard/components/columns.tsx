@@ -4,20 +4,25 @@ import { Call } from '../../../schemas/call';
 import { DataTableColumnHeader } from '../../clients/components/data-table-column-header';
 import { DataTableRowActions } from '../../clients/components/data-table-row-actions';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { PhoneIncoming, PhoneOutgoing } from 'lucide-react';
+import { PhoneIncoming, PhoneMissed, PhoneOutgoing } from 'lucide-react';
 import { getCallStatus } from '@/utils/callStatus';
 import PlayAudio from '@/components/PlayAudio';
 import HandleCall from '@/components/HandleCall';
 import { Badge } from '@/components/ui/badge';
 import { convertDateTime, formatDuration } from '@/utils/dateHelpers';
 
-const getCallIcon = (callType: string, textColor: string) => {
-  switch (Number(callType)) {
-    case 1:
-      return <PhoneIncoming className={`h-4 w-4 ${textColor}`} />;
-
-    case 2:
-      return <PhoneOutgoing className={`h-4 w-4 ${textColor}`} />;
+const getCallIcon = (
+  callStatus: string,
+  callType: string,
+  textColor: string
+) => {
+  callType = Number(callType);
+  if (callType == 1 && callStatus == 3) {
+    return <PhoneMissed className={`h-4 w-4 ${textColor}`} />;
+  } else if (callType == 1) {
+    return <PhoneIncoming className={`h-4 w-4 ${textColor}`} />;
+  } else if (callType == 2) {
+    return <PhoneOutgoing className={`h-4 w-4 ${textColor}`} />;
   }
 };
 
@@ -33,6 +38,7 @@ export const columns: ColumnDef<Call>[] = [
         row.original.calltype
       );
       const callTypeIcon = getCallIcon(
+        row.original.callstatus,
         row.original.calltype,
         callStatus.textColor
       );
@@ -48,10 +54,10 @@ export const columns: ColumnDef<Call>[] = [
     },
   },
   {
-    accessorKey: 'actions',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Click to call" />
-    ),
+    id: 'actions',
+    // header: ({ column }) => (
+    //   <DataTableColumnHeader column={column} title="Click to call" />
+    // ),
     cell: ({ row }) => {
       return (
         <div className="flex">
@@ -83,7 +89,7 @@ export const columns: ColumnDef<Call>[] = [
       const clientid = row.getValue('clientid');
       return (
         <div className="flex items-center ml-14">
-          {clientid && (
+          {/* {clientid && (
             <Avatar className="h-8 w-8">
               <AvatarImage
                 src={`https://api.dicebear.com/6.x/initials/svg?seed=${clientid}`}
@@ -97,7 +103,7 @@ export const columns: ColumnDef<Call>[] = [
                   .join('')}
               </AvatarFallback>
             </Avatar>
-          )}
+          )} */}
           <span className="ml-2">{clientid}</span>
         </div>
       );

@@ -34,7 +34,7 @@ function PlayAudio() {
         onClick={!isPlaying ? startAudio : stopAudio}
         className="flex space-x-2"
       >
-        {isPlaying ? <CirclePause /> : <PlayIcon />}
+        {isPlaying ? <CirclePause size={16} /> : <PlayIcon size={16} />}
       </Button>
     </div>
   );

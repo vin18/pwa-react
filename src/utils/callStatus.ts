@@ -42,7 +42,7 @@ export function getCallStatus(state: CallStatusState, callType) {
 
     case CallStatusState.UNANSWERED:
       return {
-        statusText: callType == 2 ? 'Missed' : 'Unanswered',
+        statusText: callType == 1 ? 'Missed' : 'Unanswered',
         bgColor: 'bg-red-100 text-red-800',
         textColor: 'text-red-800',
       };
@@ -62,16 +62,3 @@ export function getCallStatus(state: CallStatusState, callType) {
       };
   }
 }
-
-// export function getCallStatusDisplayText(
-//   state: CallStatusState,
-//   answered: number
-// ) {
-//   if (state == 5 && answered === 0) {
-//     return 'Unanswered';
-//   } else if (state == 5 && answered === 1) {
-//     return 'Answered';
-//   }
-
-//   return 'Missed';
-// }

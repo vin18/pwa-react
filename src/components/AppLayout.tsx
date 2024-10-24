@@ -9,7 +9,7 @@ import usePageRefresh from '@/hooks/usePageRefresh';
 
 function AppLayout() {
   const { isAuthenticated, logout } = useAuth();
-  // TODO: Uncomment after testing
+  // TODO: Uncomment after testing and
   // usePageRefresh();
 
   useEffect(() => {

@@ -5,7 +5,7 @@ function usePageRefresh() {
     const handleBeforeUnload = (event) => {
       // Display a custom message in modern browsers
       const message =
-        'Are you sure you want to leave this page? Changes you made may not be saved.';
+        'Are you sure you want to refresh? Your current session will get disconnected';
       event.preventDefault(); // Most browsers don't require this anymore
       event.returnValue = message; // This will show the confirmation dialog
       return message; // For some browsers, this line is necessary

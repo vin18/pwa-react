@@ -1,4 +1,4 @@
-function convertDateTime(dateTimeEpoch) {
+function convertDateTime1(dateTimeEpoch) {
   const dateTime = new Date(Number(dateTimeEpoch) * 1000);
   const year = dateTime.getFullYear();
   const month = dateTime.getMonth() + 1; // Months are zero-based, so add 1
@@ -20,5 +20,22 @@ function formatDuration(seconds) {
 
   return `${formattedMinutes}:${formattedSeconds}`;
 }
+
+function convertDateTime(unixTimestamp) {
+  const date = new Date(unixTimestamp * 1000); // Convert to milliseconds
+  const options = {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  };
+  return date.toLocaleString('en-GB', options).replace(',', '');
+}
+
+// const unixTimestamp = 1727187300; // Example Unix timestamp
+// const formattedDate = convertUnixTimestamp(unixTimestamp);
+// console.log(formattedDate);
 
 export { convertDateTime, formatDuration };

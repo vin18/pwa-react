@@ -45,7 +45,7 @@ export function DataTableRowActions<TData>({
         </DropdownMenuItem>
         <DropdownMenuItem>
           <a href="/VTSLogger_incoming_9386_20241021151717.wav" download>
-            Download
+            Download Recording
           </a>
         </DropdownMenuItem>
       </DropdownMenuContent>
