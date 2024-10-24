@@ -34,8 +34,6 @@ function App() {
                   </ProtectedRoute>
                 }
               >
-                {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-                {/* <Route path="/clients" element={<Clients />} /> */}
                 <Route path="/dashboard" element={<DashboardLayout />} />
               </Route>
               <Route path="/" element={<Login />} />

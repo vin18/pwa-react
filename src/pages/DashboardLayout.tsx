@@ -15,19 +15,31 @@ import { socket } from '@/utils/socket';
 import CallCenterItem from '@/components/CallCenterItem';
 import { useAuth } from '@/contexts/AuthContext';
 
+const intialState = {
+  state: '',
+  message: '',
+  payload: {},
+};
+
+enum TabState {
+  RECENT_CALLS = 'recent-calls',
+  CLIENTS = 'clients',
+}
+
 export function DashboardLayout() {
-  const [callStatus, setCallStatus] = useState({ state: '', message: '' });
   const [calls, setCalls] = useState([]);
+  const [callStatus, setCallStatus] = useState(intialState);
+  const [activeTab, setActiveTab] = useState(TabState.RECENT_CALLS);
 
   const { registerStatus, sessionManager } = useSIPProvider();
   const { dealer } = useAuth();
   useCallManager();
 
-  const activeSessionId = sessionManager?.managedSessions[0]?.session?.id;
-
   useEffect(() => {
-    setCallStatus({ state: '', message: '' });
+    setCallStatus(intialState);
   }, [sessionManager?.managedSessions]);
+
+  const activeSessionId = sessionManager?.managedSessions[0]?.session?.id;
 
   useEffect(() => {
     socket.on(VTS_SOCKET_MESSAGE_CHANNEL, (data) => {
@@ -61,44 +73,37 @@ export function DashboardLayout() {
           case CallStatusState.INCOMING: {
             if (CallType == 1) {
               callMsg['state'] = 'Initial';
-              callMsg['message'] = `Incoming call from ${
-                ClientId ? ClientId : ClientNumber
-              }`;
+              callMsg['message'] = `Incoming call`;
             } else if (CallType == 2) {
               callMsg['state'] = 'Initial';
-              callMsg['message'] = `Outgoing call to ${
-                ClientId ? ClientId : ClientNumber
-              }`;
+              callMsg['message'] = `Outgoing call`;
             }
             break;
           }
 
           case CallStatusState.ANSWERED:
             callMsg['state'] = 'Established';
-            callMsg['message'] = `Call is in progress with ${
-              ClientId ? ClientId : ClientNumber
-            }`;
+            callMsg['message'] = `Call is in progress`;
             break;
 
           case CallStatusState.UNANSWERED:
             callMsg['state'] = 'Missed';
-            callMsg['message'] = `Missed call from ${ClientId ?? ClientNumber}`;
+            callMsg['message'] = `Missed call`;
             break;
 
           case CallStatusState.HANGUP:
             callMsg['state'] = 'Terminated';
-            callMsg['message'] = `Call completed with ${
-              ClientId ?? ClientNumber
-            }`;
+            callMsg['message'] = `Call completed`;
             break;
         }
 
         console.log('Banner packet formed', callMsg);
         setCallStatus(callMsg);
 
+        // Push socket payload to the recent dashboard table record
         if (
           CallStatus == CallStatusState.HANGUP ||
-          CallStatus == CallStatusState.MISSED
+          CallStatus == CallStatusState.UNANSWERED
         ) {
           const callPayload = {
             sessionid: SessionId,
@@ -162,7 +167,11 @@ export function DashboardLayout() {
         />
       )}
 
-      <Tabs defaultValue="recent-calls" className="mt-4">
+      <Tabs
+        defaultValue="recent-calls"
+        className="mt-4"
+        onValueChange={(t: TabState) => setActiveTab(t)}
+      >
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="recent-calls">Recent Calls</TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>

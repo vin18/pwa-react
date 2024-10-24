@@ -47,6 +47,8 @@ export const AuthProvider = ({ children }) => {
     handleSocketConnect(loginData?.authToken);
     setDealer(loginData?.dealer);
     setSecretKey(loginData?.lssk);
+    sessionManager?.connect();
+    sessionManager?.register();
   };
 
   const logout = async (callApi = true) => {

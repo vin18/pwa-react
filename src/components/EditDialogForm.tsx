@@ -101,7 +101,7 @@ function EditDialogForm({ clientDetailsData, setCalls }) {
 
           <Button disabled={loading} type="submit" className="w-full">
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {loading ? 'Updating..' : 'Edit'}
+            {loading ? 'Updating..' : 'Save'}
           </Button>
         </form>
       </Form>

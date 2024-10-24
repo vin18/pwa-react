@@ -2,6 +2,7 @@ import { useSessionCall } from 'react-sipjs';
 import { useRef, useEffect } from 'react';
 import { toast } from 'sonner';
 import { PhoneCallIcon } from 'lucide-react';
+import { useStopwatch } from 'react-timer-hook';
 
 import { Button } from './ui/button';
 import { getCallTypeColor } from './CallLogDesktop';
@@ -19,6 +20,20 @@ function CallCenterItem({
     session,
     direction = '',
   } = useSessionCall(sessionId);
+  // const {
+  //   totalSeconds,
+  //   seconds,
+  //   minutes,
+  //   hours,
+  //   days,
+  //   isRunning,
+  //   start,
+  //   pause,
+  //   reset,
+  // } = useStopwatch({
+  //   autoStart: true,
+  //   // offsetTimestamp: sessionId ? new Date() : null,
+  // });
 
   const ringtoneRef = useRef(null);
 
@@ -93,14 +108,14 @@ function CallCenterItem({
     // }
 
     // Hide status banner after certain interval
-    // if (session?.state === 'Terminated') {
-    //   setTimeout(() => {
-    //     setCallStatus({ state: '', message: '' });
-    //   }, 3000);
-    // }
+    if (session?.state === 'Terminated') {
+      setTimeout(() => {
+        setCallStatus({ state: '', message: '', payload: {} });
+      }, 10000);
+    }
   }, [session.state, callStatus.state]);
 
-  // console.log('Call Status', callStatus);
+  console.log('Call Status', callStatus);
 
   return (
     <div>
@@ -109,13 +124,30 @@ function CallCenterItem({
       {/* Call state from socket */}
       {callStatus?.state && (
         <div
-          className={`flex items-center ${getCallTypeColor(
+          className={`items-center ${getCallTypeColor(
             callStatus?.state?.toLowerCase()
           )} text-xs font-bold px-3 py-2 mb-4 shadow`}
           role="alert"
         >
-          <PhoneCallIcon className="h-4 w-4 mr-2" />
-          <p>{callStatus.message}</p>
+          <div className="flex">
+            <PhoneCallIcon className="h-4 w-4 mr-2" />
+            {callStatus.message}
+          </div>
+          <div>
+            <span>Client ID: </span>
+            <span>{callStatus?.payload?.ClientId}</span>
+          </div>
+          <div>
+            <span>Client Number: </span>
+            <span>{callStatus?.payload?.ClientNumber}</span>
+          </div>
+
+          {/* <div>
+            <span>Call Duration: </span>
+            <span>
+              {minutes}:{seconds}
+            </span>
+          </div> */}
         </div>
       )}
 

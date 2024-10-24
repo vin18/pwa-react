@@ -9,37 +9,15 @@ import { getCallStatus } from '@/utils/callStatus';
 import PlayAudio from '@/components/PlayAudio';
 import HandleCall from '@/components/HandleCall';
 import { Badge } from '@/components/ui/badge';
+import { convertDateTime, formatDuration } from '@/utils/dateHelpers';
 
-function convertDateTime(dateTimeEpoch) {
-  const dateTime = new Date(Number(dateTimeEpoch) * 1000);
-  const year = dateTime.getFullYear();
-  const month = dateTime.getMonth() + 1; // Months are zero-based, so add 1
-  const day = dateTime.getDate();
-  const hours = dateTime.getHours();
-  const minutes = dateTime.getMinutes();
-  const seconds = dateTime.getSeconds();
-  return `${day}-${month}-${year} ${hours}:${minutes}`;
-}
-
-function formatDuration(seconds) {
-  const hours = Math.floor(seconds / 3600); // Calculate hours
-  const minutes = Math.floor((seconds % 3600) / 60); // Calculate remaining minutes
-  const remainingSeconds = seconds % 60; // Calculate remaining seconds
-
-  // Ensure two-digit formatting for minutes and seconds
-  const formattedMinutes = String(minutes).padStart(2, '0');
-  const formattedSeconds = String(remainingSeconds).padStart(2, '0');
-
-  return `${formattedMinutes}:${formattedSeconds}`;
-}
-
-const getCallIcon = (callType: string) => {
+const getCallIcon = (callType: string, textColor: string) => {
   switch (Number(callType)) {
     case 1:
-      return <PhoneIncoming className="h-4 w-4 text-green-500" />;
+      return <PhoneIncoming className={`h-4 w-4 ${textColor}`} />;
 
     case 2:
-      return <PhoneOutgoing className="h-4 w-4 text-blue-500" />;
+      return <PhoneOutgoing className={`h-4 w-4 ${textColor}`} />;
   }
 };
 
@@ -54,23 +32,26 @@ export const columns: ColumnDef<Call>[] = [
         row.original.callstatus,
         row.original.calltype
       );
-      const callTypeIcon = getCallIcon(row.original.calltype);
+      const callTypeIcon = getCallIcon(
+        row.original.calltype,
+        callStatus.textColor
+      );
 
       return (
-        <div className="flex">
-          <span className="mr-4">{callTypeIcon}</span>
-          <Badge variant="secondary" className={callStatus.bgColor}>
-            <span className="flex items-center space-x-1">
-              <span>{callStatus.statusText}</span>
-            </span>
-          </Badge>
-        </div>
+        <Badge variant="secondary" className={callStatus.bgColor}>
+          <span className="flex items-center space-x-1">
+            {callTypeIcon}
+            <span>{callStatus.statusText}</span>
+          </span>
+        </Badge>
       );
     },
   },
   {
     accessorKey: 'actions',
-    // header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Click to call" />
+    ),
     cell: ({ row }) => {
       return (
         <div className="flex">
@@ -142,8 +123,6 @@ export const columns: ColumnDef<Call>[] = [
       <DataTableColumnHeader column={column} title="Duration" />
     ),
     cell: ({ row }) => {
-      // const callType = row.original.calltype;
-
       const durationEpoch =
         Number(row.getValue('endtime')) - Number(row.getValue('starttime'));
       let duration = formatDuration(durationEpoch);
@@ -162,75 +141,13 @@ export const columns: ColumnDef<Call>[] = [
       );
     },
   },
-  // {
-  //   accessorKey: 'callstatus',
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Type" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     console.log('Row', row);
-  //     const callStatus = Number(row.getValue('callstatus'));
-  //     const callType = row.original.calltype;
-  //     const answered = row.original.answered;
-
-  //     // const callDisplayText = getCallStatusDisplayText(callStatus, answered);
-
-  //     // const status = callStatuses1.find(
-  //     //   (status) =>
-  //     //     status.callStatus ==
-  //     //     Number(
-  //     //       row.getValue('callstatus') &&
-  //     //         status.answered == row.getValue('answered')
-  //     //     )
-  //     // );
-
-  //     // if (!status) {
-  //     //   return null;
-  //     // }
-
-  //     return (
-  //       <Badge variant="secondary" className={getCallTypeColor(callType)}>
-  //         <span className="flex items-center space-x-1">
-  //           {getCallIcon(callType)}
-  //           <span>
-  //             {callDisplayText.charAt(0).toUpperCase() +
-  //               callDisplayText.slice(1)}
-  //           </span>
-  //         </span>
-  //       </Badge>
-  //     );
-
-  //     return (
-  //       <div className="flex w-[100px] items-center">
-  //         {/* {status.icon && (
-  //           <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-  //         )}
-  //         <span>{status.label}</span> */}
-  //         {/* Incoming */}
-
-  //         <Badge variant="secondary">
-  //           <span className="flex items-center space-x-1">
-  //             {/* {getCallIcon(callStatusText.toLowerCase())}&nbsp; */}
-  //             <span>
-  //               {callDisplayText.charAt(0).toUpperCase() +
-  //                 callDisplayText.slice(1)}
-  //             </span>
-  //           </span>
-  //         </Badge>
-  //       </div>
-  //     );
-  //   },
-  //   filterFn: (row, id, value) => {
-  //     return value.includes(row.getValue(id));
-  //   },
-  // },
   {
     accessorKey: 'starttime',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Start Time" />
     ),
     cell: ({ row }) => {
-      if (row.getValue('starttime') <= 0) return null;
+      if (Number(row.getValue('starttime')) <= 0) return null;
       const formattedStartTime = convertDateTime(row.getValue('starttime'));
 
       return (
@@ -248,7 +165,7 @@ export const columns: ColumnDef<Call>[] = [
       <DataTableColumnHeader column={column} title="End Time" />
     ),
     cell: ({ row }) => {
-      if (row.getValue('endtime') <= 0) return null;
+      if (Number(row.getValue('endtime')) <= 0) return null;
       const formattedEndTime = convertDateTime(row.getValue('endtime'));
 
       return (

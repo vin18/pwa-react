@@ -22,7 +22,7 @@ function AppLayout() {
         }
       });
     }
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <div>

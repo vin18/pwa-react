@@ -2,20 +2,7 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { Call } from '../../../schemas/call';
 import { DataTableColumnHeader } from './data-table-column-header';
-import { DataTableRowActions } from './data-table-row-actions';
-import { callStatuses } from '../data/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  Badge,
-  CirclePause,
-  PhoneIncoming,
-  PhoneMissed,
-  PlayIcon,
-} from 'lucide-react';
-import { getCallStatus } from '@/utils/callStatus';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import PlayAudio from '@/components/PlayAudio';
 import HandleCall from '@/components/HandleCall';
 
 export const columns: ColumnDef<Call>[] = [
