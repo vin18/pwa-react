@@ -33,7 +33,7 @@ function HandleCall({ call }) {
     console.log('Custom headers 1', customHeaders1);
 
     const inviterOptions = { extraHeaders: customHeaders };
-    await sessionManager?.call(`sip:9384@${SIP_URL}`, inviterOptions);
+    await sessionManager?.call(`sip:9386@${SIP_URL}`, inviterOptions);
     toast.success('Call connected!');
   };
 

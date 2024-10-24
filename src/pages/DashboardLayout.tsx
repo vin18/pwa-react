@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useSIPProvider } from 'react-sipjs';
+import { useEffect, useRef, useState } from 'react';
+import { useSessionCall, useSIPProvider } from 'react-sipjs';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -14,6 +14,8 @@ import {
 import { socket } from '@/utils/socket';
 import CallCenterItem from '@/components/CallCenterItem';
 import { useAuth } from '@/contexts/AuthContext';
+import useTimer, { formatTime } from '@/hooks/useTimer';
+import { getCallsApi } from '@/services/apiCalls';
 
 const intialState = {
   state: '',
@@ -30,16 +32,23 @@ export function DashboardLayout() {
   const [calls, setCalls] = useState([]);
   const [callStatus, setCallStatus] = useState(intialState);
   const [activeTab, setActiveTab] = useState(TabState.RECENT_CALLS);
+  const [timer, setTimer] = useState(0);
+  const countRef = useRef(null);
 
   const { registerStatus, sessionManager } = useSIPProvider();
   const { dealer } = useAuth();
   useCallManager();
 
-  useEffect(() => {
-    setCallStatus(intialState);
-  }, [sessionManager?.managedSessions]);
+  // useEffect(() => {
+  //   setCallStatus(intialState);
+  // }, [sessionManager?.managedSessions]);
 
   const activeSessionId = sessionManager?.managedSessions[0]?.session?.id;
+
+  async function fetchCalls() {
+    const data = await getCallsApi();
+    setCalls(data);
+  }
 
   useEffect(() => {
     socket.on(VTS_SOCKET_MESSAGE_CHANNEL, (data) => {
@@ -105,27 +114,31 @@ export function DashboardLayout() {
           CallStatus == CallStatusState.HANGUP ||
           CallStatus == CallStatusState.UNANSWERED
         ) {
-          const callPayload = {
-            sessionid: SessionId,
-            starttime: StartTime,
-            endtime: EndTime,
-            callstatus: CallStatus,
-            clientid: ClientId,
-            remarks: '',
-            phonenumber: ClientNumber,
-            createdat: '',
-            dealerid: DealerId,
-            recording: Recording,
-            answered: Answered,
-            dealernumber: DealerNumber,
-            calltype: CallType,
-          };
+          // Update dashboard table via API call
+          fetchCalls();
 
-          if (calls?.length > 0) {
-            setCalls((prevCalls) => [callPayload, ...prevCalls]);
-          } else {
-            setCalls([callPayload]);
-          }
+          // TODO: Update dashboard table from socket payload
+          // const callPayload = {
+          //   sessionid: SessionId,
+          //   starttime: StartTime,
+          //   endtime: EndTime,
+          //   callstatus: CallStatus,
+          //   clientid: ClientId,
+          //   remarks: '',
+          //   phonenumber: ClientNumber,
+          //   createdat: '',
+          //   dealerid: DealerId,
+          //   recording: Recording,
+          //   answered: Answered,
+          //   dealernumber: DealerNumber,
+          //   calltype: CallType,
+          // };
+
+          // if (calls?.length > 0) {
+          //   setCalls((prevCalls) => [callPayload, ...prevCalls]);
+          // } else {
+          //   setCalls([callPayload]);
+          // }
         }
       }
     });

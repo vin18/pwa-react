@@ -28,7 +28,7 @@ const getCallIcon = (
 
 export const columns: ColumnDef<Call>[] = [
   {
-    accessorKey: 'status',
+    accessorKey: 'call-status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
@@ -54,7 +54,7 @@ export const columns: ColumnDef<Call>[] = [
     },
   },
   {
-    id: 'actions',
+    id: 'call-actions',
     // header: ({ column }) => (
     //   <DataTableColumnHeader column={column} title="Click to call" />
     // ),

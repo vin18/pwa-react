@@ -1,5 +1,5 @@
 import { useSessionCall } from 'react-sipjs';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { PhoneCallIcon } from 'lucide-react';
 import { useStopwatch } from 'react-timer-hook';
@@ -7,6 +7,7 @@ import { useStopwatch } from 'react-timer-hook';
 import { Button } from './ui/button';
 import { getCallTypeColor } from './CallLogDesktop';
 import { CallSessionDirection } from '@/utils/callStatus';
+import { formatTime } from '@/hooks/useTimer';
 
 function CallCenterItem({
   sessionId,
@@ -20,22 +21,10 @@ function CallCenterItem({
     session,
     direction = '',
   } = useSessionCall(sessionId);
-  // const {
-  //   totalSeconds,
-  //   seconds,
-  //   minutes,
-  //   hours,
-  //   days,
-  //   isRunning,
-  //   start,
-  //   pause,
-  //   reset,
-  // } = useStopwatch({
-  //   autoStart: true,
-  //   // offsetTimestamp: sessionId ? new Date() : null,
-  // });
 
+  const [timer, setTimer] = useState(0);
   const ringtoneRef = useRef(null);
+  const countRef = useRef(null);
 
   useEffect(() => {
     // Ringtone
@@ -52,7 +41,15 @@ function CallCenterItem({
       }
     }
 
+    // Start call duration
+    if (session.state === 'Established') {
+      countRef.current = setInterval(() => {
+        setTimer((timer) => timer + 1);
+      }, 1000);
+    }
+
     // Show call notification
+    // TODO: Uncomment after testing
     // if (
     //   session.state === 'Initial' &&
     //   direction === CallSessionDirection.INCOMING
@@ -111,22 +108,36 @@ function CallCenterItem({
     if (session?.state === 'Terminated') {
       setTimeout(() => {
         setCallStatus({ state: '', message: '', payload: {} });
-      }, 10000);
+      }, 100000);
     }
+
+    return () => clearInterval(countRef.current);
   }, [session.state, callStatus.state]);
 
   console.log('Call Status', callStatus);
+  console.log('Call duration', formatTime(timer));
 
   return (
     <div>
       {/* <p>Session - {sessionId}</p> */}
+
+      {callStatus?.state === 'Establishing' && (
+        <div
+          className={`items-center ${getCallTypeColor(
+            callStatus?.state?.toLowerCase()
+          )} text-sm font-bold px-3 py-2 mb-4 shadow`}
+          role="alert"
+        >
+          <div className="flex">Connecting call..</div>
+        </div>
+      )}
 
       {/* Call state from socket */}
       {callStatus?.state && (
         <div
           className={`items-center ${getCallTypeColor(
             callStatus?.state?.toLowerCase()
-          )} text-xs font-bold px-3 py-2 mb-4 shadow`}
+          )} text-sm font-bold px-3 py-2 mb-4 shadow`}
           role="alert"
         >
           <div className="flex">
@@ -142,12 +153,12 @@ function CallCenterItem({
             <span>{callStatus?.payload?.ClientNumber}</span>
           </div>
 
-          {/* <div>
-            <span>Call Duration: </span>
-            <span>
-              {minutes}:{seconds}
-            </span>
-          </div> */}
+          {session?.state === 'Established' && (
+            <div>
+              <span>Call Duration: </span>
+              <span>{formatTime(timer)}</span>
+            </div>
+          )}
         </div>
       )}
 
