@@ -2,12 +2,11 @@ import { useSessionCall } from 'react-sipjs';
 import { useRef, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { PhoneCallIcon } from 'lucide-react';
-import { useStopwatch } from 'react-timer-hook';
 
 import { Button } from './ui/button';
 import { getCallTypeColor } from './CallLogDesktop';
 import { CallSessionDirection } from '@/utils/callStatus';
-import { formatTime } from '@/hooks/useTimer';
+import { convertCallDurationSeconds } from '@/utils/dateHelpers';
 
 function CallCenterItem({
   sessionId,
@@ -115,7 +114,7 @@ function CallCenterItem({
   }, [session.state, callStatus.state]);
 
   console.log('Call Status', callStatus);
-  console.log('Call duration', formatTime(timer));
+  console.log('Call duration', convertCallDurationSeconds(timer));
 
   return (
     <div>
@@ -156,7 +155,7 @@ function CallCenterItem({
           {session?.state === 'Established' && (
             <div>
               <span>Call Duration: </span>
-              <span>{formatTime(timer)}</span>
+              <span>{convertCallDurationSeconds(timer)}</span>
             </div>
           )}
         </div>

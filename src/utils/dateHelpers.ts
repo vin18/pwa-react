@@ -34,8 +34,10 @@ function convertDateTime(unixTimestamp) {
   return date.toLocaleString('en-GB', options).replace(',', '');
 }
 
-// const unixTimestamp = 1727187300; // Example Unix timestamp
-// const formattedDate = convertUnixTimestamp(unixTimestamp);
-// console.log(formattedDate);
+function convertCallDurationSeconds(seconds) {
+  const date = new Date(null);
+  date.setSeconds(seconds);
+  return date.toISOString().substr(11, 8);
+}
 
-export { convertDateTime, formatDuration };
+export { convertDateTime, formatDuration, convertCallDurationSeconds };

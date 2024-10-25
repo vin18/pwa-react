@@ -204,7 +204,7 @@ export const columns: ColumnDef<Call>[] = [
       <DataTableColumnHeader column={column} title="Call Recording" />
     ),
     cell: ({ row }) => {
-      return <PlayAudio />;
+      return <PlayAudio row={row.original} />;
     },
   },
   {

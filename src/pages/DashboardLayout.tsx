@@ -14,7 +14,6 @@ import {
 import { socket } from '@/utils/socket';
 import CallCenterItem from '@/components/CallCenterItem';
 import { useAuth } from '@/contexts/AuthContext';
-import useTimer, { formatTime } from '@/hooks/useTimer';
 import { getCallsApi } from '@/services/apiCalls';
 
 const intialState = {
