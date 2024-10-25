@@ -107,24 +107,38 @@ function CallCenterItem({
     // Hide status banner after certain interval
     if (session?.state === 'Terminated') {
       setTimeout(() => {
-        setCallStatus({ state: '', message: '', payload: {} });
+        // setCallStatus({ state: '', message: '', payload: {} });
+        setCallStatus(intialState);
       }, 100000);
     }
 
     return () => {
       clearInterval(countRef.current);
-      setCallStatus(intialState);
+      // setCallStatus(intialState);
     };
   }, [session.state, callStatus.state]);
 
-  // console.log('Call Status', callStatus);
+  console.log('Call Status', callStatus);
+  console.log('Active state', session.state);
+  console.log('Active Session', session);
   // console.log('Call duration', convertCallDurationSeconds(timer));
+
+  const isIncomingCall =
+    session.state === 'Initial' && direction === CallSessionDirection.INCOMING;
+  const isOutgoingCall = direction === CallSessionDirection.OUTGOING;
+  const isConnectingCall =
+    session?.state === 'Initial' || session?.state === 'Establishing';
+  const isCallConnected =
+    'Established' === session.state ||
+    (direction === CallSessionDirection.OUTGOING &&
+      (('Initial' === session.state && 'Established' === session.state) ||
+        'Establishing' === session.state));
 
   return (
     <div>
       {/* <p>Session - {sessionId}</p> */}
 
-      {callStatus?.state === 'Establishing' && (
+      {/* {session?.state === 'Establishing' && (
         <div
           className={`items-center ${getCallTypeColor(
             callStatus?.state?.toLowerCase()
@@ -133,19 +147,18 @@ function CallCenterItem({
         >
           <div className="flex">Connecting call..</div>
         </div>
-      )}
+      )} */}
 
-      {direction === CallSessionDirection.OUTGOING &&
-        (session?.state === 'Initial' || session?.state === 'Establishing') && (
-          <div
-            className={`items-center ${getCallTypeColor(
-              'incoming'
-            )} text-sm font-bold px-3 py-2 mb-4 shadow`}
-            role="alert"
-          >
-            <div className="flex">Connecting call..</div>
-          </div>
-        )}
+      {/* {isOutgoingCall && isConnectingCall && (
+        <div
+          className={`items-center ${getCallTypeColor(
+            'incoming'
+          )} text-sm font-bold px-3 py-2 mb-4 shadow`}
+          role="alert"
+        >
+          <div className="flex">Connecting call..</div>
+        </div>
+      )} */}
 
       {/* Call state from socket */}
       {callStatus?.state && (
@@ -177,22 +190,18 @@ function CallCenterItem({
         </div>
       )}
 
-      {session.state === 'Initial' &&
-        direction === CallSessionDirection.INCOMING && (
-          <>
-            <Button variant="success" className="mr-4" onClick={answer}>
-              Answer
-            </Button>
-            <Button variant="destructive" onClick={decline}>
-              Decline
-            </Button>
-          </>
-        )}
+      {isIncomingCall && (
+        <>
+          <Button variant="success" className="mr-4" onClick={answer}>
+            Answer
+          </Button>
+          <Button variant="destructive" onClick={decline}>
+            Decline
+          </Button>
+        </>
+      )}
 
-      {('Established' === session.state ||
-        (direction === CallSessionDirection.OUTGOING &&
-          (('Initial' === session.state && 'Established' === session.state) ||
-            'Establishing' === session.state))) && (
+      {isCallConnected && (
         <>
           <Button variant="destructive" onClick={hangup}>
             Hangup
@@ -200,7 +209,14 @@ function CallCenterItem({
         </>
       )}
 
-      <audio ref={ringtoneRef} src="/sounds/ringtone.wav" preload="auto" loop />
+      {direction === CallSessionDirection.INCOMING && (
+        <audio
+          ref={ringtoneRef}
+          src="/sounds/ringtone.wav"
+          preload="auto"
+          loop
+        />
+      )}
     </div>
   );
 }

@@ -5,7 +5,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import Dashboard from './dashboard';
 import Clients from './clients';
-import { CallStatusState, RegisterStatus } from '@/utils/callStatus';
+import {
+  CallStatusState,
+  CONNECT_STATUS,
+  RegisterStatus,
+} from '@/utils/callStatus';
 import useCallManager from '@/hooks/useCallManager';
 import {
   VTS_SOCKET_CALL_CHANNEL,
@@ -35,7 +39,7 @@ export function DashboardLayout() {
   const [timer, setTimer] = useState(0);
   const countRef = useRef(null);
 
-  const { registerStatus, sessionManager } = useSIPProvider();
+  const { registerStatus, sessionManager, connectStatus } = useSIPProvider();
   const { dealer } = useAuth();
   useCallManager();
 
@@ -45,9 +49,9 @@ export function DashboardLayout() {
 
   const activeSessionId = sessionManager?.managedSessions[0]?.session?.id;
 
-  useEffect(() => {
-    setCallStatus(intialState);
-  }, [sessionManager?.managedSessions[0]?.session?.id]);
+  // useEffect(() => {
+  //   setCallStatus(intialState);
+  // }, [sessionManager?.managedSessions[0]?.session?.id]);
 
   async function fetchCalls() {
     const data = await getCallsApi();
@@ -57,7 +61,7 @@ export function DashboardLayout() {
   useEffect(() => {
     socket.on(VTS_SOCKET_MESSAGE_CHANNEL, (data) => {
       if (data.code === VTS_SOCKET_CALL_CHANNEL) {
-        console.log('Socket data received: ', data);
+        console.log('Socket data received: ', data.message);
         const callMsg = { state: '', message: '' };
         const {
           CallStatus,
@@ -173,8 +177,13 @@ export function DashboardLayout() {
             {registerStatus === RegisterStatus.UNREGISTERED
               ? 'Unregistered'
               : 'Registered'}{' '}
+            and{' '}
+            {connectStatus === CONNECT_STATUS.CONNECTED
+              ? 'connected'
+              : 'not connected'}{' '}
             to asterisk
           </p>
+
           <p className="text-muted-foreground">
             Here&apos;s a list of recent calls.
           </p>

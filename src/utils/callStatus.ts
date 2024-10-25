@@ -5,14 +5,6 @@ export enum CallStatusState {
   HANGUP = 4,
 }
 
-export enum CallStatusState1 {
-  INCOMING = 1,
-  ATTEMPTING = 2,
-  CONNECTED = 3,
-  MISSED = 4,
-  HANGUP = 5,
-}
-
 export enum CallSessionDirection {
   INCOMING = 'INCOMING',
   OUTGOING = 'OUTGOING',
@@ -21,6 +13,11 @@ export enum CallSessionDirection {
 export enum RegisterStatus {
   UNREGISTERED = 'UNREGISTERED',
   REGISTERED = 'REGISTERED',
+}
+
+export enum CONNECT_STATUS {
+  CONNECTED = 'CONNECTED',
+  DISCONNECTED = 'DISCONNECTED',
 }
 
 export function getCallStatus(state: CallStatusState, callType) {
