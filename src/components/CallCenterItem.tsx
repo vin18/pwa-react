@@ -7,6 +7,7 @@ import { Button } from './ui/button';
 import { getCallTypeColor } from './CallLogDesktop';
 import { CallSessionDirection } from '@/utils/callStatus';
 import { convertCallDurationSeconds } from '@/utils/dateHelpers';
+import { intialState } from '@/pages/DashboardLayout';
 
 function CallCenterItem({
   sessionId,
@@ -110,11 +111,14 @@ function CallCenterItem({
       }, 100000);
     }
 
-    return () => clearInterval(countRef.current);
+    return () => {
+      clearInterval(countRef.current);
+      setCallStatus(intialState);
+    };
   }, [session.state, callStatus.state]);
 
-  console.log('Call Status', callStatus);
-  console.log('Call duration', convertCallDurationSeconds(timer));
+  // console.log('Call Status', callStatus);
+  // console.log('Call duration', convertCallDurationSeconds(timer));
 
   return (
     <div>
@@ -130,6 +134,18 @@ function CallCenterItem({
           <div className="flex">Connecting call..</div>
         </div>
       )}
+
+      {direction === CallSessionDirection.OUTGOING &&
+        (session?.state === 'Initial' || session?.state === 'Establishing') && (
+          <div
+            className={`items-center ${getCallTypeColor(
+              'incoming'
+            )} text-sm font-bold px-3 py-2 mb-4 shadow`}
+            role="alert"
+          >
+            <div className="flex">Connecting call..</div>
+          </div>
+        )}
 
       {/* Call state from socket */}
       {callStatus?.state && (
@@ -174,7 +190,9 @@ function CallCenterItem({
         )}
 
       {('Established' === session.state ||
-        direction === CallSessionDirection.OUTGOING) && (
+        (direction === CallSessionDirection.OUTGOING &&
+          (('Initial' === session.state && 'Established' === session.state) ||
+            'Establishing' === session.state))) && (
         <>
           <Button variant="destructive" onClick={hangup}>
             Hangup

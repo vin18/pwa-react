@@ -44,28 +44,32 @@ export const columns: ColumnDef<Call>[] = [
       );
 
       return (
-        <Badge variant="secondary" className={callStatus.bgColor}>
-          <span className="flex items-center space-x-1">
-            {callTypeIcon}
-            <span>{callStatus.statusText}</span>
-          </span>
-        </Badge>
-      );
-    },
-  },
-  {
-    id: 'call-actions',
-    // header: ({ column }) => (
-    //   <DataTableColumnHeader column={column} title="Click to call" />
-    // ),
-    cell: ({ row }) => {
-      return (
         <div className="flex">
           <HandleCall call={row.original} />
+
+          <Badge variant="secondary" className={callStatus.bgColor}>
+            <span className="flex items-center space-x-1">
+              {callTypeIcon}
+              <span>{callStatus.statusText}</span>
+            </span>
+          </Badge>
         </div>
       );
     },
   },
+  // {
+  //   id: 'call-actions',
+  //   // header: ({ column }) => (
+  //   //   <DataTableColumnHeader column={column} title="Click to call" />
+  //   // ),
+  //   cell: ({ row }) => {
+  //     return (
+  //       <div className="flex">
+  //         <HandleCall call={row.original} />
+  //       </div>
+  //     );
+  //   },
+  // },
   {
     accessorKey: 'dealerId',
     header: ({ column }) => (

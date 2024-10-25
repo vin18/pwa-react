@@ -22,19 +22,23 @@ function HandleCall({ call }) {
       `CI: ${clientid}`,
     ];
 
-    const customHeaders1 = [
-      'DI: DEALER2',
-      'DN: 9386',
-      'CN: 9384',
-      'CI: DEALER1',
-    ];
+    // const customHeaders1 = [
+    //   'DI: DEALER2',
+    //   'DN: 9386',
+    //   'CN: 9384',
+    //   'CI: DEALER1',
+    // ];
 
     console.log('Custom headers', customHeaders);
-    console.log('Custom headers 1', customHeaders1);
+    // console.log('Custom headers 1', customHeaders1);
 
     const inviterOptions = { extraHeaders: customHeaders };
-    await sessionManager?.call(`sip:9386@${SIP_URL}`, inviterOptions);
-    toast.success('Call connected!');
+    // await sessionManager?.call(`sip:9386@${SIP_URL}`, inviterOptions);
+    await sessionManager?.call(
+      `sip:${dealer.phonenumber}@${SIP_URL}`,
+      inviterOptions
+    );
+    // toast.success('Call connected!');
   };
 
   return (

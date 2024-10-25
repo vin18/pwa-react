@@ -15,8 +15,9 @@ import { socket } from '@/utils/socket';
 import CallCenterItem from '@/components/CallCenterItem';
 import { useAuth } from '@/contexts/AuthContext';
 import { getCallsApi } from '@/services/apiCalls';
+import { Button } from '@/components/ui/button';
 
-const intialState = {
+export const intialState = {
   state: '',
   message: '',
   payload: {},
@@ -43,6 +44,10 @@ export function DashboardLayout() {
   // }, [sessionManager?.managedSessions]);
 
   const activeSessionId = sessionManager?.managedSessions[0]?.session?.id;
+
+  useEffect(() => {
+    setCallStatus(intialState);
+  }, [sessionManager?.managedSessions[0]?.session?.id]);
 
   async function fetchCalls() {
     const data = await getCallsApi();
@@ -150,26 +155,31 @@ export function DashboardLayout() {
   return (
     <>
       <div className="flex items-center justify-between my-4">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Welcome back!</h2>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold tracking-tight">
+            Welcome back,{' '}
+            {registerStatus === RegisterStatus.REGISTERED
+              ? dealer?.dealerid
+              : ''}
+          </h2>
+
+          <p
+            className={`mb-2 ${
+              registerStatus === RegisterStatus.UNREGISTERED
+                ? 'text-red-500'
+                : 'text-green-500'
+            }`}
+          >
+            {registerStatus === RegisterStatus.UNREGISTERED
+              ? 'Unregistered'
+              : 'Registered'}{' '}
+            to asterisk
+          </p>
           <p className="text-muted-foreground">
             Here&apos;s a list of recent calls.
           </p>
         </div>
       </div>
-
-      <p
-        className={`mb-2 ${
-          registerStatus === RegisterStatus.UNREGISTERED
-            ? 'text-red-500'
-            : 'text-green-500'
-        }`}
-      >
-        {dealer?.dealerid} is&nbsp;
-        {registerStatus === RegisterStatus.UNREGISTERED
-          ? 'unregistered'
-          : 'registered'}{' '}
-      </p>
 
       {activeSessionId && (
         <CallCenterItem
@@ -181,12 +191,27 @@ export function DashboardLayout() {
 
       <Tabs
         defaultValue="recent-calls"
-        className="mt-4"
+        className="mt-4 p-0"
         onValueChange={(t: TabState) => setActiveTab(t)}
       >
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="recent-calls">Recent Calls</TabsTrigger>
-          <TabsTrigger value="clients">Clients</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 p-0">
+          <TabsTrigger value="recent-calls" className="p-0">
+            <Button
+              variant={activeTab === 'recent-calls' ? `default` : `ghost`}
+              className="w-full p-0 border-0"
+            >
+              Recent calls
+            </Button>
+            {/* Recent Calls */}
+          </TabsTrigger>
+          <TabsTrigger value="clients" className="p-0">
+            <Button
+              variant={activeTab === 'clients' ? `default` : `ghost`}
+              className="w-full border-0"
+            >
+              Clients
+            </Button>
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="recent-calls">
           <Card>

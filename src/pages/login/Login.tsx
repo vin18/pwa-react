@@ -76,7 +76,7 @@ function Login() {
   }, [isAuthenticated, navigate, redirectToPath]);
 
   return (
-    <div className="flex flex-col justify-between h-screen">
+    <div className="flex flex-col justify-between items-center h-screen">
       <Card className="mx-8 lg:mx-auto max-w-sm mt-12 shadow-sm rounded-sm">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-primary">

@@ -59,7 +59,9 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      {/* <DataTableToolbar table={table} /> */}
+      <div className="mt-5">
+        <DataTableToolbar table={table} />
+      </div>
       {/* <CallLogDesktop table={table} /> */}
       <ClientLogDesktop table={table} />
       <DataTablePagination table={table} />
