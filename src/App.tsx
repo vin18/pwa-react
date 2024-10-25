@@ -10,10 +10,11 @@ import { AuthProvider } from '@/contexts/AuthContext';
 
 // export const SIP_URL = `172.18.2.147:8089`;
 export const SIP_URL = import.meta.env.VITE_SIP_IP;
+export const SIP_WS_PATH = import.meta.env.VTS_SIP_WS_PATH;
 
 const sipProviderConfig = {
   domain: SIP_URL,
-  webSocketServer: `wss://${SIP_URL}/asterisk/ws`,
+  webSocketServer: SIP_WS_PATH,
 };
 
 function App() {
