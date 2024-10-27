@@ -182,7 +182,6 @@ export function DashboardLayout() {
             {connectStatus === CONNECT_STATUS.CONNECTED
               ? 'connected'
               : 'not connected'}{' '}
-            to asterisk
           </p>
 
           <p className="text-muted-foreground">
