@@ -44,8 +44,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = (loginData = null) => {
     setToken(loginData?.authToken);
-    handleSocketConnect(loginData?.authToken);
     setDealer(loginData?.dealer);
+    handleSocketConnect(loginData?.authToken);
     setSecretKey(loginData?.lssk);
     sessionManager?.connect();
     sessionManager?.register();
@@ -72,14 +72,15 @@ export const AuthProvider = ({ children }) => {
     socket.disconnect();
   };
 
-  useEffect(() => {
-    async function getLocalStorageSecretKey() {
-      const localStorageSecretKeyResponse = await localStorageApi();
-      setSecretKey(localStorageSecretKeyResponse);
-    }
+  // TODO: Add local storage support
+  // useEffect(() => {
+  //   async function getLocalStorageSecretKey() {
+  //     const localStorageSecretKeyResponse = await localStorageApi();
+  //     setSecretKey(localStorageSecretKeyResponse);
+  //   }
 
-    if (!token) getLocalStorageSecretKey();
-  }, [token, navigate]);
+  //   if (!token) getLocalStorageSecretKey();
+  // }, [token, navigate]);
 
   const value = {
     isAuthenticated,

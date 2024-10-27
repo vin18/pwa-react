@@ -8,7 +8,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import AppLayout from '@/components/AppLayout';
 import { AuthProvider } from '@/contexts/AuthContext';
 
-// export const SIP_URL = `172.18.2.147:8089`;
 export const SIP_URL = import.meta.env.VITE_SIP_IP;
 export const SIP_WS_PATH = import.meta.env.VITE_SIP_WS_PATH;
 

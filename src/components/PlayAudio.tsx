@@ -31,9 +31,7 @@ function PlayAudio({ row }) {
   const audioRef = useRef(null);
   const [isFetching, setIsFetching] = useState(false);
 
-  console.log('Audio url', audioUrl);
-
-  const startAudio = async () => {
+  const startAudio = async (recordingPath) => {
     // Fetch the audio file using axios
     try {
       const BASE_URL = import.meta.env.VITE_API_URL;
@@ -41,7 +39,10 @@ function PlayAudio({ row }) {
       if (!audioUrl) {
         setIsFetching(true);
 
-        fetch(`${BASE_URL}/v1/calls/getRecording`, { method: 'POST' })
+        fetch(`${BASE_URL}/v1/calls/getRecording`, {
+          method: 'POST',
+          body: JSON.stringify({ recordingPathName: recordingPath }),
+        })
           .then((response) => {
             if (!response.ok) {
               throw new Error('Failed to fetch audio file');
@@ -106,7 +107,7 @@ function PlayAudio({ row }) {
       {!isFetching ? (
         <Button
           variant="ghost"
-          onClick={!isPlaying ? startAudio : stopAudio}
+          onClick={!isPlaying ? () => startAudio(row.recordingpath) : stopAudio}
           className="flex space-x-2"
         >
           {isPlaying ? <CirclePause size={16} /> : <PlayIcon size={16} />}
