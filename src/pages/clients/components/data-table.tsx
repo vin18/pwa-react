@@ -58,7 +58,6 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <h1 className="text-3xl ml-8">Clients</h1>
       {/* <DataTableToolbar table={table} /> */}
       <CallLogDesktop table={table} />
       {/* <DataTablePagination table={table} /> */}

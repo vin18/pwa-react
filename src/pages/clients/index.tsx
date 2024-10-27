@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { DataTable } from '../dashboard/components/data-table';
+// import { DataTable } from '../dashboard/components/data-table';
+import { DataTable } from '../clients/components/data-table';
 import { getClientsApi } from '@/services/apiClientDetails';
 import { columns } from './components/columns';
 
