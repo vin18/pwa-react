@@ -19,12 +19,12 @@ function useCallManager() {
   const WEBRTC_PASSWORD = import.meta.env.VITE_WEBRTC_PASSWORD;
 
   useEffect(() => {
-    if (dealer) {
-      connectAndRegister({
-        username: dealer.phonenumber,
-        password: WEBRTC_PASSWORD,
-      });
-    }
+    // if (dealer) {
+    //   connectAndRegister({
+    //     username: dealer.phonenumber,
+    //     password: WEBRTC_PASSWORD,
+    //   });
+    // }
 
     return () => {
       sessionManager?.disconnect();
