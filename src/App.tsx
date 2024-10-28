@@ -17,13 +17,13 @@ const sipProviderConfig = {
 };
 
 function App() {
-  const { dealer } = useAuth();
+  // const { dealer } = useAuth();
   const WEBRTC_PASSWORD = import.meta.env.VITE_WEBRTC_PASSWORD;
 
   const sipConfig = {
-    uri: `sip:${dealer.phonenumber}@testsip.nirmalbang.com:5070`,
+    uri: `sip:$1111@testsip.nirmalbang.com:5070`,
     wsServers: [SIP_WS_PATH], // Replace with your WebSocket server
-    authorizationUser: dealer.phonenumber,
+    authorizationUser: '1111',
     password: WEBRTC_PASSWORD,
     traceSip: true, // Optional: Enable SIP trace logging
     sessionDescriptionHandlerFactoryOptions: {
