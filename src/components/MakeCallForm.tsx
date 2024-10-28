@@ -19,7 +19,6 @@ import { makeCallSchema } from '@/schemas/call';
 
 import { Textarea } from './ui/textarea';
 import { useAuth } from '@/contexts/AuthContext';
-import { SIP_URL } from '@/App';
 import { useSIPProvider } from 'react-sipjs';
 import { useMakeCallModal } from '@/hooks/useMakeCallModal';
 
@@ -38,6 +37,7 @@ function MakeCallForm() {
   });
 
   async function onSubmit(values: z.infer<typeof makeCallSchema>) {
+    const SIP_URL = import.meta.env.VITE_SIP_IP;
     const customHeaders = [
       `DI: ${dealer.dealerid}`,
       `DN: ${dealer.phonenumber}`,

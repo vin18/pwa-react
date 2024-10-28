@@ -2,7 +2,6 @@ import { PhoneIcon } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
-import { SIP_URL } from '@/App';
 import { useSIPProvider } from 'react-sipjs';
 
 function HandleCall({ call }) {
@@ -10,6 +9,7 @@ function HandleCall({ call }) {
   const { sessionManager } = useSIPProvider();
 
   const handleCall = async (receiver = {}) => {
+    const SIP_URL = import.meta.env.VITE_SIP_IP;
     // 9379 - Jey G
     // 9384 - Sharad
     // console.log('Receiver', receiver);
