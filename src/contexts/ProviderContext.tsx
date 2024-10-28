@@ -66,8 +66,8 @@ export const SIPProvider = (props: {
       },
       rtcConfiguration: {
         iceServers: [
-          // { urls: 'stun:stun.l.google.com:19302' }
-          { urls: 'stun:stun.ideasip.com' },
+          { urls: 'stun:stun.l.google.com:19302' },
+          // { urls: 'stun:stun.ideasip.com' },
         ],
       },
 
