@@ -20,6 +20,8 @@ import CallCenterItem from '@/components/CallCenterItem';
 import { useAuth } from '@/contexts/AuthContext';
 import { getCallsApi } from '@/services/apiCalls';
 import { Button } from '@/components/ui/button';
+import { useMakeCallModal } from '@/hooks/useMakeCallModal';
+import { MakeCallDialog } from '@/components/MakeCallDialog';
 
 export const intialState = {
   state: '',
@@ -36,10 +38,9 @@ export function DashboardLayout() {
   const [calls, setCalls] = useState([]);
   const [callStatus, setCallStatus] = useState(intialState);
   const [activeTab, setActiveTab] = useState(TabState.RECENT_CALLS);
-  const [timer, setTimer] = useState(0);
-  const countRef = useRef(null);
 
   const { registerStatus, sessionManager, connectStatus } = useSIPProvider();
+  const { onOpen: handleMakeCallModalOpen, isOpen } = useMakeCallModal();
   const { dealer } = useAuth();
   useCallManager();
 
@@ -181,12 +182,15 @@ export function DashboardLayout() {
             {connectStatus === CONNECT_STATUS.CONNECTED
               ? 'connected'
               : 'not connected'}{' '}
-            to asterisk
           </p>
 
           <p className="text-muted-foreground">
             Here&apos;s a list of recent calls.
           </p>
+
+          <div className="mt-4">
+            <Button onClick={handleMakeCallModalOpen}>Make a call</Button>
+          </div>
         </div>
       </div>
 
@@ -237,6 +241,8 @@ export function DashboardLayout() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <MakeCallDialog />
     </>
   );
 }
