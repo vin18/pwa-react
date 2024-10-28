@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { useSessionCall, useSIPProvider } from 'react-sipjs';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -22,6 +21,7 @@ import { getCallsApi } from '@/services/apiCalls';
 import { Button } from '@/components/ui/button';
 import { useMakeCallModal } from '@/hooks/useMakeCallModal';
 import { MakeCallDialog } from '@/components/MakeCallDialog';
+import { useSIPProvider } from '@/components/SipProvider';
 
 export const intialState = {
   state: '',
@@ -38,10 +38,12 @@ export function DashboardLayout() {
   const [calls, setCalls] = useState([]);
   const [callStatus, setCallStatus] = useState(intialState);
   const [activeTab, setActiveTab] = useState(TabState.RECENT_CALLS);
+  const [incomingCall, setIncomingCall] = useState(false);
 
   const { registerStatus, sessionManager, connectStatus } = useSIPProvider();
   const { onOpen: handleMakeCallModalOpen, isOpen } = useMakeCallModal();
   const { dealer } = useAuth();
+
   useCallManager();
 
   // useEffect(() => {
@@ -49,6 +51,7 @@ export function DashboardLayout() {
   // }, [sessionManager?.managedSessions]);
 
   const activeSessionId = sessionManager?.managedSessions[0]?.session?.id;
+  console.log('Active session id', activeSessionId);
 
   // useEffect(() => {
   //   setCallStatus(intialState);
@@ -187,10 +190,6 @@ export function DashboardLayout() {
           <p className="text-muted-foreground">
             Here&apos;s a list of recent calls.
           </p>
-
-          <div className="mt-4">
-            <Button onClick={handleMakeCallModalOpen}>Make a call</Button>
-          </div>
         </div>
       </div>
 

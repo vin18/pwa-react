@@ -2,7 +2,7 @@ import { PhoneIcon } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
-import { useSIPProvider } from 'react-sipjs';
+import { useSIPProvider } from './SipProvider';
 
 function HandleCall({ call }) {
   const { dealer } = useAuth();

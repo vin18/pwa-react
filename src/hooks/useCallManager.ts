@@ -1,6 +1,6 @@
+import { useSIPProvider } from '@/components/SipProvider';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEffect } from 'react';
-import { useSIPProvider } from 'react-sipjs';
 
 function useCallManager() {
   const { dealer } = useAuth();
@@ -19,12 +19,12 @@ function useCallManager() {
   const WEBRTC_PASSWORD = import.meta.env.VITE_WEBRTC_PASSWORD;
 
   useEffect(() => {
-    // if (dealer) {
-    //   connectAndRegister({
-    //     username: dealer.phonenumber,
-    //     password: WEBRTC_PASSWORD,
-    //   });
-    // }
+    if (dealer) {
+      connectAndRegister({
+        username: dealer.phonenumber,
+        password: WEBRTC_PASSWORD,
+      });
+    }
 
     return () => {
       sessionManager?.disconnect();

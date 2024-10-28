@@ -8,8 +8,8 @@ import {
   VTS_LOCAL_STORAGE_TOKEN_KEY,
 } from '@/utils/constants';
 import { localStorageApi, logoutApi } from '@/services/apiAuth';
-import { useSIPProvider } from 'react-sipjs';
 import { useEditHistory } from '@/hooks/useEditCallHistory';
+import { useSIPProvider } from '@/components/SipProvider';
 
 const AuthContext = createContext(null);
 

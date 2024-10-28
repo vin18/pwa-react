@@ -19,12 +19,13 @@ import { makeCallSchema } from '@/schemas/call';
 
 import { Textarea } from './ui/textarea';
 import { useAuth } from '@/contexts/AuthContext';
-import { useSIPProvider } from 'react-sipjs';
 import { useMakeCallModal } from '@/hooks/useMakeCallModal';
+import { Inviter, UserAgent } from 'sip.js';
+import { useSIPProvider } from './SipProvider';
 
 function MakeCallForm() {
   const [loading, setLoading] = useState(false);
-  const { dealer } = useAuth();
+  const { dealer, userAgent } = useAuth();
   const { sessionManager } = useSIPProvider();
   const { onClose } = useMakeCallModal();
 
@@ -36,6 +37,22 @@ function MakeCallForm() {
     },
   });
 
+  const makeCall = (target, inviterOptions) => {
+    // Create an Inviter instance to initiate the call
+    const inviter = new Inviter(userAgent, target, inviterOptions);
+    console.log('Inviter', inviter);
+
+    inviter
+      .invite()
+      .then(() => {
+        console.log('Call initiated');
+        toast.success(`Call initiated`);
+      })
+      .catch((error) => {
+        console.error('Error initiating call:', error);
+      });
+  };
+
   async function onSubmit(values: z.infer<typeof makeCallSchema>) {
     const SIP_URL = import.meta.env.VITE_SIP_IP;
     const customHeaders = [
@@ -45,38 +62,20 @@ function MakeCallForm() {
       `CI: ${values.clientId}`,
     ];
 
-    console.log('Make a call custom headers', customHeaders);
-
     const inviterOptions = { extraHeaders: customHeaders };
     // await sessionManager?.call(`sip:9386@${SIP_URL}`, inviterOptions);
     setLoading(true);
     try {
-      await sessionManager?.call(
-        `sip:${dealer.phonenumber}@${SIP_URL}`,
-        inviterOptions
-      );
-      toast.success(`Call initiated`);
+      // await sessionManager?.call(
+      //   `sip:${dealer.phonenumber}@${SIP_URL}`,
+      //   inviterOptions
+      // );
+      makeCall(`sip:${dealer.phonenumber}@${SIP_URL}`, inviterOptions);
       onClose();
     } catch (error) {
     } finally {
       setLoading(false);
     }
-
-    // TODO: Make a call
-
-    // try {
-    //   setLoading(true);
-    //   await updateClientRecordsApi(payload);
-    //   const data = await getCallsApi();
-    //   setCalls(data);
-    //   toast.success(`Details updated successfully`);
-    //   onClose();
-    // } catch (error) {
-    //   console.log(error);
-    //   toast.error(error?.response?.data?.message ?? error?.message);
-    // } finally {
-    //   setLoading(false);
-    // }
   }
 
   return (

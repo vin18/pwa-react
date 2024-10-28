@@ -1,4 +1,3 @@
-import { useSessionCall } from 'react-sipjs';
 import { useRef, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { PhoneCallIcon } from 'lucide-react';
@@ -8,6 +7,7 @@ import { getCallTypeColor } from './CallLogDesktop';
 import { CallSessionDirection } from '@/utils/callStatus';
 import { convertCallDurationSeconds } from '@/utils/dateHelpers';
 import { intialState } from '@/pages/DashboardLayout';
+import { useSessionCall } from './SipProvider';
 
 function CallCenterItem({
   sessionId,

@@ -14,7 +14,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getCallStatus } from '@/utils/callStatus';
 import { Button } from './ui/button';
 import { SIP_URL } from '@/App';
-import { useSIPProvider } from 'react-sipjs';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { columns } from '@/pages/clients/components/columns';
