@@ -179,12 +179,8 @@ export function DashboardLayout() {
             }`}
           >
             {registerStatus === RegisterStatus.UNREGISTERED
-              ? 'Unregistered'
-              : 'Registered'}{' '}
-            and{' '}
-            {connectStatus === CONNECT_STATUS.CONNECTED
-              ? 'connected'
-              : 'not connected'}{' '}
+              ? 'Dealer is unregistered'
+              : 'Dealer is registered'}{' '}
           </p>
 
           <p className="text-muted-foreground">
@@ -206,11 +202,11 @@ export function DashboardLayout() {
         className="mt-4 p-0"
         onValueChange={(t: TabState) => setActiveTab(t)}
       >
-        <TabsList className="grid w-full grid-cols-2 p-0">
+        <TabsList className="grid grid-cols-2 p-0 w-1/4">
           <TabsTrigger value="recent-calls" className="p-0">
             <Button
               variant={activeTab === 'recent-calls' ? `default` : `ghost`}
-              className="w-full p-0 border-0"
+              className="w-full p-0 border"
             >
               Recent calls
             </Button>
@@ -219,7 +215,7 @@ export function DashboardLayout() {
           <TabsTrigger value="clients" className="p-0">
             <Button
               variant={activeTab === 'clients' ? `default` : `ghost`}
-              className="w-full border-0"
+              className="w-full border"
             >
               Clients
             </Button>

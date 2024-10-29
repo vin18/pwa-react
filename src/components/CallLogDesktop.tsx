@@ -57,7 +57,7 @@ export const getCallTypeColor = (type: string) => {
 
 export default function CallLogDesktop({ table }) {
   return (
-    <div className=" py-10">
+    <div className="py-10">
       {/* <h1 className="text-2xl font-bold mb-2">Recent calls</h1>
       <Input
         className="max-w-sm mb-4"

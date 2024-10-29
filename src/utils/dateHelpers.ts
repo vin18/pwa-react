@@ -31,7 +31,7 @@ function convertDateTime(unixTimestamp) {
     minute: 'numeric',
     hour12: true,
   };
-  return date.toLocaleString('en-GB', options).replace(',', '');
+  return date.toLocaleString('en-GB', options).replace(',', '').toUpperCase();
 }
 
 function convertCallDurationSeconds(seconds) {
