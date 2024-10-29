@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useEditHistory } from '@/hooks/useEditCallHistory';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -56,9 +57,11 @@ export function DataTableRowActions<TData>({
           link.click(); // Programmatically click the link to trigger download
           document.body.removeChild(link); // Clean up the link element
           window.URL.revokeObjectURL(url); // Release blob URL
+          toast.success(`Recording downloaded successfully`);
         })
         .catch((error) => {
           console.error('Error fetching audio:', error);
+          toast.error(`Error while fetching recording file`);
         });
     } catch (error) {
       console.error('Error fetching audio file:', error);

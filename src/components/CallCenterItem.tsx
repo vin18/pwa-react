@@ -141,33 +141,14 @@ function CallCenterItem({
 
   const isIncomingCall =
     session.state === 'Initial' && direction === CallSessionDirection.INCOMING;
+  const isOutgoingCall =
+    direction === CallSessionDirection.OUTGOING &&
+    (session.state === 'Initial' ||
+      session.state === 'Establishing' ||
+      session.state === 'Established');
 
   return (
-    <div>
-      {/* <p>Session - {sessionId}</p> */}
-
-      {/* {session?.state === 'Establishing' && (
-        <div
-          className={`items-center ${getCallTypeColor(
-            callStatus?.state?.toLowerCase()
-          )} text-sm font-bold px-3 py-2 mb-4 shadow`}
-          role="alert"
-        >
-          <div className="flex">Connecting call..</div>
-        </div>
-      )} */}
-
-      {/* {isOutgoingCall && isConnectingCall && (
-        <div
-          className={`items-center ${getCallTypeColor(
-            'incoming'
-          )} text-sm font-bold px-3 py-2 mb-4 shadow`}
-          role="alert"
-        >
-          <div className="flex">Connecting call..</div>
-        </div>
-      )} */}
-
+    <div className="mt-4">
       {/* Call state from socket */}
       {callStatus?.state && (
         <div
@@ -209,16 +190,13 @@ function CallCenterItem({
         </>
       )}
 
-      {direction === CallSessionDirection.OUTGOING &&
-        (session.state === 'Initial' ||
-          session.state === 'Establishing' ||
-          session.state === 'Established') && (
-          <>
-            <Button variant="destructive" onClick={hangup}>
-              Hangup
-            </Button>
-          </>
-        )}
+      {isOutgoingCall && (
+        <div>
+          <Button variant="destructive" onClick={hangup}>
+            Hangup
+          </Button>
+        </div>
+      )}
 
       {direction === CallSessionDirection.INCOMING && (
         <audio
@@ -230,7 +208,6 @@ function CallCenterItem({
       )}
 
       <audio ref={audioRef} autoPlay />
-      <audio ref={remoteAudioRef} autoPlay />
     </div>
   );
 }

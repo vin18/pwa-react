@@ -24,6 +24,7 @@ import { MakeCallDialog } from '@/components/MakeCallDialog';
 import { useSIPProvider } from '@/components/SipProvider';
 import UserNav from '@/components/UserNav';
 import logo from '/public/nb-logo.svg';
+import { LightbulbIcon } from 'lucide-react';
 
 export const intialState = {
   state: '',
@@ -166,34 +167,21 @@ export function DashboardLayout() {
 
   return (
     <>
-      <div className="flex justify-between mb-12 mt-4 md:mt-0">
+      <div className="flex justify-between mt-4 md:mt-0">
         <img className="w-36" src={logo} alt="Logo" />
 
-        <div className="self-start">
-          <UserNav />
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between my-8 md:my-4">
-        <div className="mb-6">
-          <h2 className="text-xl font-bold tracking-tight">
-            Welcome back,{' '}
-            {registerStatus === RegisterStatus.REGISTERED
-              ? dealer?.dealerid
-              : ''}
-          </h2>
-
-          {/* <p
-            className={`mb-2 ${
-              registerStatus === RegisterStatus.UNREGISTERED
-                ? 'text-red-500'
-                : 'text-green-500'
+        <div className="flex items-center">
+          <p className="mr-2">
+            Welcome, <span className="font-semibold">{dealer?.dealerid}</span>
+          </p>
+          <div
+            className={`rounded-full  h-2 w-2 mr-2 ${
+              registerStatus === RegisterStatus.REGISTERED
+                ? 'bg-green-500'
+                : 'bg-red-500'
             }`}
-          >
-            {registerStatus === RegisterStatus.UNREGISTERED
-              ? 'Dealer is unregistered'
-              : 'Dealer is registered'}{' '}
-          </p> */}
+          ></div>
+          <UserNav />
         </div>
       </div>
 
@@ -207,7 +195,7 @@ export function DashboardLayout() {
 
       <Tabs
         defaultValue="recent-calls"
-        className="mt-4 p-0"
+        className="mt-8 p-0"
         onValueChange={(t: TabState) => setActiveTab(t)}
       >
         <TabsList className="grid grid-cols-2 p-0 md:w-1/4">

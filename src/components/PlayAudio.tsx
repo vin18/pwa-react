@@ -1,10 +1,7 @@
 import { useRef, useState } from 'react';
 import { CirclePause, PlayIcon } from 'lucide-react';
 import { Button } from './ui/button';
-import audioMp3 from '/VTSLogger_incoming_9386_20241021151717.wav';
-import { getRecordingApi } from '@/services/apiCalls';
-import axios from 'axios';
-import apiClient from '@/utils/apiClient';
+import { toast } from 'sonner';
 
 const LoadingSpinner = () => {
   return (
@@ -63,8 +60,8 @@ function PlayAudio({ row }) {
               setIsPlaying(true);
             }
             setIsPlaying(true);
-
             setIsFetching(false);
+            toast.success(`Playing recording`);
           })
           .catch((error) => {
             console.error('Error fetching audio:', error);
@@ -75,6 +72,7 @@ function PlayAudio({ row }) {
           audioRef.current.currentTime = 0; // Start from the beginning
           audioRef.current.play();
           setIsPlaying(true);
+          toast.success(`Playing recording`);
         }
       }
     } catch (error) {
@@ -88,25 +86,13 @@ function PlayAudio({ row }) {
       audioRef.current.pause(); // Pause the audio
       audioRef.current.currentTime = 0; // Reset to the beginning
       setIsPlaying(false);
+      toast.success(`Recording stopped`);
     }
   };
 
   return (
     <div>
-      {/* <audio ref={audioRef}>
-        <source src={audioMp3} type="audio/mpeg" />
-        Your browser does not support the audio element.
-      </audio> */}
-      {/* {audioUrl && (
-        <audio src={audioUrl} autoPlay ref={audioRef}>
-          <source src={audioUrl} type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
-      )} */}
-
       {audioUrl && <audio ref={audioRef} src={audioUrl} autoPlay />}
-
-      {/* {audioUrl && <audio controls src={audioUrl} />} */}
 
       {!isFetching ? (
         <Button

@@ -41,7 +41,7 @@ function App() {
               <Route path="/login" element={<Login />} />
             </Routes>
 
-            <Toaster richColors position="top-right" />
+            <Toaster richColors position="top-center" duration={2000} />
           </SIPProvider>
         </AuthProvider>
       </div>
