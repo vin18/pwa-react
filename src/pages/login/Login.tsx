@@ -27,6 +27,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { loginFormSchema } from '@/schemas/user';
 import { loginApi } from '@/services/apiAuth';
 import { useAxiosWithAuth } from '@/utils/apiClient';
+import logo from '/public/nb-logo.svg';
 import Footer from '@/components/Footer';
 
 function Login() {
@@ -76,93 +77,105 @@ function Login() {
   }, [isAuthenticated, navigate, redirectToPath]);
 
   return (
-    <div className="flex flex-col justify-between items-center h-screen">
-      <Card className="mx-8 lg:mx-auto max-w-sm mt-12 shadow-sm rounded-sm">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-primary">
-            Login
-          </CardTitle>
-          <CardDescription>
-            Enter your credentials to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-              <FormField
-                control={form.control}
-                name="dealerId"
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <FormLabel>Dealer ID</FormLabel>
-                      <FormControl className="flex">
-                        <>
-                          <Input
-                            {...field}
-                            placeholder="Your dealer id"
-                            value={field.value.toUpperCase()}
-                          />
-                        </>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
+    <div>
+      <img className="w-36 mx-5 mt-5" src={logo} alt="Logo" />
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            id="password"
-                            type={showPassword ? 'text' : 'password'}
-                            required
-                            {...field}
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                            onClick={() => setShowPassword((prev) => !prev)}
-                          >
-                            {showPassword ? (
-                              <EyeIcon className="h-4 w-4" aria-hidden="true" />
-                            ) : (
-                              <EyeOffIcon
-                                className="h-4 w-4"
-                                aria-hidden="true"
-                              />
-                            )}
-                            <span className="sr-only">
-                              {showPassword ? 'Hide password' : 'Show password'}
-                            </span>
-                          </Button>
-                        </div>
-                      </FormControl>
+      <div className="flex flex-col justify-between items-center h-screen">
+        <Card className="mx-8 lg:mx-auto max-w-sm mt-12 shadow-sm rounded-sm">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold text-primary">
+              Login
+            </CardTitle>
+            <CardDescription>
+              Enter your credentials to login to your account
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-3"
+              >
+                <FormField
+                  control={form.control}
+                  name="dealerId"
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>Dealer ID</FormLabel>
+                        <FormControl className="flex">
+                          <>
+                            <Input
+                              {...field}
+                              placeholder="Your dealer id"
+                              value={field.value.toUpperCase()}
+                            />
+                          </>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
 
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              id="password"
+                              type={showPassword ? 'text' : 'password'}
+                              required
+                              {...field}
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                              onClick={() => setShowPassword((prev) => !prev)}
+                            >
+                              {showPassword ? (
+                                <EyeIcon
+                                  className="h-4 w-4"
+                                  aria-hidden="true"
+                                />
+                              ) : (
+                                <EyeOffIcon
+                                  className="h-4 w-4"
+                                  aria-hidden="true"
+                                />
+                              )}
+                              <span className="sr-only">
+                                {showPassword
+                                  ? 'Hide password'
+                                  : 'Show password'}
+                              </span>
+                            </Button>
+                          </div>
+                        </FormControl>
 
-              <Button disabled={loading} type="submit" className="w-full">
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {loading ? 'Logging in..' : 'Login'}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-      <Footer />
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <Button disabled={loading} type="submit" className="w-full">
+                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {loading ? 'Logging in..' : 'Login'}
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+        <Footer />
+      </div>
     </div>
   );
 }

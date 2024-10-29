@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { socket } from '@/utils/socket';
 import { useAuth } from '@/contexts/AuthContext';
 import usePageRefresh from '@/hooks/usePageRefresh';
+import logo from '/public/nb-logo.svg';
 
 function AppLayout() {
   const { isAuthenticated, logout } = useAuth();
@@ -27,7 +28,7 @@ function AppLayout() {
   return (
     <div>
       <div className="flex gap-6">
-        <SideMenu />
+        {/* <SideMenu /> */}
         <div className="md:p-4 lg:py-8 lg:px-16 flex-1 overflow-auto">
           <Outlet />
         </div>

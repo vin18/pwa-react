@@ -22,6 +22,8 @@ import { Button } from '@/components/ui/button';
 import { useMakeCallModal } from '@/hooks/useMakeCallModal';
 import { MakeCallDialog } from '@/components/MakeCallDialog';
 import { useSIPProvider } from '@/components/SipProvider';
+import UserNav from '@/components/UserNav';
+import logo from '/public/nb-logo.svg';
 
 export const intialState = {
   state: '',
@@ -162,6 +164,14 @@ export function DashboardLayout() {
 
   return (
     <>
+      <div className="flex justify-between mb-12">
+        <img className="w-36" src={logo} alt="Logo" />
+
+        <div className="self-start">
+          <UserNav />
+        </div>
+      </div>
+
       <div className="flex items-center justify-between my-8 md:my-4">
         <div className="mb-6">
           <h2 className="text-xl font-bold tracking-tight">
