@@ -41,7 +41,7 @@ function PlayAudio({ row }) {
 
         fetch(`${BASE_URL}/v1/calls/getRecording`, {
           method: 'POST',
-          body: JSON.stringify({ recordingPathName: recordingPath }),
+          body: JSON.stringify({ recordingPath }),
         })
           .then((response) => {
             if (!response.ok) {
@@ -107,7 +107,7 @@ function PlayAudio({ row }) {
       {!isFetching ? (
         <Button
           variant="ghost"
-          onClick={!isPlaying ? () => startAudio(row.recordingpath) : stopAudio}
+          onClick={!isPlaying ? () => startAudio(row.recording) : stopAudio}
           className="flex space-x-2"
         >
           {isPlaying ? <CirclePause size={16} /> : <PlayIcon size={16} />}

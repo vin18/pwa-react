@@ -28,7 +28,7 @@ function AppLayout() {
     <div>
       <div className="flex gap-6">
         <SideMenu />
-        <div className="p-4 lg:py-8 lg:px-16 flex-1 overflow-auto">
+        <div className="md:p-4 lg:py-8 lg:px-16 flex-1 overflow-auto">
           <Outlet />
         </div>
       </div>

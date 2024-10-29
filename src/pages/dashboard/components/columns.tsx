@@ -70,16 +70,16 @@ export const columns: ColumnDef<Call>[] = [
   //     );
   //   },
   // },
-  {
-    accessorKey: 'dealerId',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Dealer ID" />
-    ),
-    cell: ({ row }) => {
-      const dealerid = row.original.dealerid;
-      return <p>{dealerid}</p>;
-    },
-  },
+  // {
+  //   accessorKey: 'dealerId',
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Dealer ID" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     const dealerid = row.original.dealerid;
+  //     return <p>{dealerid}</p>;
+  //   },
+  // },
   {
     accessorKey: 'clientid',
     header: ({ column }) => (

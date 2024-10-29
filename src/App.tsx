@@ -6,7 +6,6 @@ import Login from '@/pages/login/Login';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AppLayout from '@/components/AppLayout';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
-import GlobalLayout from './components/GlobalLayout';
 import { SIPProvider } from './contexts/ProviderContext';
 
 export const SIP_URL = import.meta.env.VITE_SIP_IP;
@@ -20,7 +19,7 @@ const sipProviderConfig = {
 function App() {
   return (
     <Router>
-      <div className="p-5">
+      <div className="p-2 md:p-5">
         <AuthProvider>
           <SIPProvider
             options={{
