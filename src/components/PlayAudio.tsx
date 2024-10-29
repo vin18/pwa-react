@@ -41,6 +41,10 @@ function PlayAudio({ row }) {
 
         fetch(`${BASE_URL}/v1/calls/getRecording`, {
           method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({ recordingPath }),
         })
           .then((response) => {
