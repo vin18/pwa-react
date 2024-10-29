@@ -25,13 +25,20 @@ export function DataTableRowActions<TData>({
   } = useEditHistory();
   const [audioUrl, setAudioUrl] = useState('');
 
-  const downloadAudio = async () => {
+  const downloadAudio = async (recordingPath) => {
     // Fetch the audio file using axios
 
     try {
       const BASE_URL = import.meta.env.VITE_API_URL;
 
-      fetch(`${BASE_URL}/v1/calls/getRecording`, { method: 'POST' })
+      fetch(`${BASE_URL}/v1/calls/getRecording`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ recordingPath }),
+      })
         .then((response) => {
           if (!response.ok) {
             throw new Error('Failed to fetch audio file');
@@ -84,7 +91,11 @@ export function DataTableRowActions<TData>({
           {/* <a href="/VTSLogger_incoming_9386_20241021151717.wav" download>
             Download Recording
           </a> */}
-          <Button className="p-0" variant="ghost" onClick={downloadAudio}>
+          <Button
+            className="p-0"
+            variant="ghost"
+            onClick={() => downloadAudio(row.original.recording)}
+          >
             Download Recording
           </Button>
         </DropdownMenuItem>
