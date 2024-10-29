@@ -17,7 +17,7 @@ function Dashboard({ calls, setCalls }) {
 
   return (
     <>
-      <div className="hidden h-full flex-1 flex-col p-8 pt-0 mb-4 md:flex">
+      <div className="h-full flex-1 flex-col p-8 pt-0 mb-4 flex overflow-auto">
         <DataTable data={calls} columns={columns} />
         <EditCallerInfoDialog setCalls={setCalls} />
       </div>

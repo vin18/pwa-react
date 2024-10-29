@@ -4,16 +4,10 @@ import { useEffect } from 'react';
 
 function useCallManager() {
   const { dealer } = useAuth();
-  const {
-    connectAndRegister,
-    sessionManager,
-    sessions,
-    connectStatus,
-    registerStatus,
-  } = useSIPProvider();
-  console.log('managedSessions', sessionManager?.managedSessions);
-  console.log('sessions', sessions);
-  console.log('sessionManager', sessionManager);
+  const { connectAndRegister, sessionManager } = useSIPProvider();
+  // console.log('managedSessions', sessionManager?.managedSessions);
+  // console.log('sessions', sessions);
+  // console.log('sessionManager', sessionManager);
   // console.log('connectStatus', sessionManager);
   // console.log('registerStatus', sessionManager);
   const WEBRTC_PASSWORD = import.meta.env.VITE_WEBRTC_PASSWORD;

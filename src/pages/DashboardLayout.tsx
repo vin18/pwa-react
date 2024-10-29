@@ -162,7 +162,7 @@ export function DashboardLayout() {
 
   return (
     <>
-      <div className="flex items-center justify-between my-4">
+      <div className="flex items-center justify-between my-8 md:my-4">
         <div className="mb-6">
           <h2 className="text-xl font-bold tracking-tight">
             Welcome back,{' '}

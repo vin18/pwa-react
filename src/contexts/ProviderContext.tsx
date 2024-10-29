@@ -48,6 +48,19 @@ export const SIPProvider = (props: {
     [setSessions]
   );
 
+  function setupRemoteMedia(session: Session) {
+    const remoteStream = new MediaStream();
+    session.sessionDescriptionHandler.peerConnection
+      .getReceivers()
+      .forEach((receiver) => {
+        if (receiver.track) {
+          remoteStream.addTrack(receiver.track);
+        }
+      });
+    refAudioRemote.current.srcObject = remoteStream;
+    refAudioRemote.current.play();
+  }
+
   const connectAndRegister = useCallback((sipAccount: SIPAccount) => {
     const sessionManager = new SessionManager(options.webSocketServer, {
       aor: `sip:${sipAccount.username}@${options.domain}`,
@@ -90,6 +103,7 @@ export const SIPProvider = (props: {
         },
         onCallAnswered: (session) => {
           updateSession(session);
+          // setupRemoteMedia(session);
           setSessionTimer((timer) => ({
             ...timer,
             [session.id]: {
@@ -110,6 +124,7 @@ export const SIPProvider = (props: {
         },
         onCallReceived: (session) => {
           updateSession(session);
+          // setupRemoteMedia(session);
           setSessionTimer((timer) => ({
             ...timer,
             [session.id]: {

@@ -21,7 +21,8 @@ function CallCenterItem({
     session,
     direction = '',
   } = useSessionCall(sessionId);
-
+  const audioRef = useRef(null); // Reference for the audio element
+  const remoteAudioRef = useRef(null);
   const [timer, setTimer] = useState(0);
   const ringtoneRef = useRef(null);
   const countRef = useRef(null);
@@ -47,6 +48,26 @@ function CallCenterItem({
         setTimer((timer) => timer + 1);
       }, 1000);
     }
+
+    // session._sessionDescriptionHandler._remoteMediaStream.on(event) => {
+    //   const remoteStream = event.streams[0];
+    //   if (audioRef.current) {
+    //     audioRef.current.srcObject = remoteStream;
+    //   }
+    // };
+
+    // session._sessionDescriptionHandler._remoteMediaStream.ontrack(
+    //   'event',
+    //   (event) => {
+    //     const remoteStream = event.stream;
+    //     // Here, attach the remote stream to an audio element
+    //     const audioElement = document.getElementById('remoteAudio');
+    //     if (audioElement) {
+    //       audioElement.srcObject = remoteStream;
+    //       audioElement.play();
+    //     }
+    //   }
+    // );
 
     // Show call notification
     // TODO: Uncomment after testing
@@ -118,21 +139,8 @@ function CallCenterItem({
     };
   }, [session.state, callStatus.state]);
 
-  console.log('Call Status', callStatus);
-  console.log('Active state', session.state);
-  console.log('Active Session', session);
-  // console.log('Call duration', convertCallDurationSeconds(timer));
-
   const isIncomingCall =
     session.state === 'Initial' && direction === CallSessionDirection.INCOMING;
-  const isOutgoingCall = direction === CallSessionDirection.OUTGOING;
-  const isConnectingCall =
-    session?.state === 'Initial' || session?.state === 'Establishing';
-  const isCallConnected =
-    'Established' === session.state ||
-    (direction === CallSessionDirection.OUTGOING &&
-      (('Initial' === session.state && 'Established' === session.state) ||
-        'Establishing' === session.state));
 
   return (
     <div>
@@ -201,13 +209,16 @@ function CallCenterItem({
         </>
       )}
 
-      {isCallConnected && (
-        <>
-          <Button variant="destructive" onClick={hangup}>
-            Hangup
-          </Button>
-        </>
-      )}
+      {direction === CallSessionDirection.OUTGOING &&
+        (session.state === 'Initial' ||
+          session.state === 'Establishing' ||
+          session.state === 'Established') && (
+          <>
+            <Button variant="destructive" onClick={hangup}>
+              Hangup
+            </Button>
+          </>
+        )}
 
       {direction === CallSessionDirection.INCOMING && (
         <audio
@@ -217,6 +228,9 @@ function CallCenterItem({
           loop
         />
       )}
+
+      <audio ref={audioRef} autoPlay />
+      <audio ref={remoteAudioRef} autoPlay />
     </div>
   );
 }
