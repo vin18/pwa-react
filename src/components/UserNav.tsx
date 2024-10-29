@@ -28,11 +28,11 @@ export default function UserNav() {
         <Button variant="ghost" className="relative h-9 w-9 rounded-full">
           <Avatar className="h-9 w-9">
             <AvatarImage
-              src={`https://api.dicebear.com/6.x/initials/svg?seed=${dealer.dealername}`}
+              // src={`https://api.dicebear.com/6.x/initials/svg?seed=${dealer.dealername}`}
               alt={dealer.dealername}
               className="rounded-full"
             />
-            <AvatarFallback>
+            <AvatarFallback className="border-2  bg-green-600 text-green-100">
               {dealer.dealername
                 .split(' ')
                 .map((n) => n[0])

@@ -44,7 +44,7 @@ export function DashboardLayout() {
 
   const { registerStatus, sessionManager, connectStatus } = useSIPProvider();
   const { onOpen: handleMakeCallModalOpen, isOpen } = useMakeCallModal();
-  const { dealer } = useAuth();
+  const { dealer, logout } = useAuth();
 
   useCallManager();
 
@@ -66,7 +66,9 @@ export function DashboardLayout() {
 
   useEffect(() => {
     socket.on(VTS_SOCKET_MESSAGE_CHANNEL, (data) => {
-      if (data.code === VTS_SOCKET_CALL_CHANNEL) {
+      if (data.code === 'logout-event') {
+        logout();
+      } else if (data.code === VTS_SOCKET_CALL_CHANNEL) {
         console.log('Socket data received: ', data.message);
         const callMsg = { state: '', message: '' };
         const {
@@ -164,7 +166,7 @@ export function DashboardLayout() {
 
   return (
     <>
-      <div className="flex justify-between mb-12">
+      <div className="flex justify-between mb-12 mt-4 md:mt-0">
         <img className="w-36" src={logo} alt="Logo" />
 
         <div className="self-start">
@@ -181,7 +183,7 @@ export function DashboardLayout() {
               : ''}
           </h2>
 
-          <p
+          {/* <p
             className={`mb-2 ${
               registerStatus === RegisterStatus.UNREGISTERED
                 ? 'text-red-500'
@@ -191,11 +193,7 @@ export function DashboardLayout() {
             {registerStatus === RegisterStatus.UNREGISTERED
               ? 'Dealer is unregistered'
               : 'Dealer is registered'}{' '}
-          </p>
-
-          <p className="text-muted-foreground">
-            Here&apos;s a list of recent calls.
-          </p>
+          </p> */}
         </div>
       </div>
 
@@ -212,7 +210,7 @@ export function DashboardLayout() {
         className="mt-4 p-0"
         onValueChange={(t: TabState) => setActiveTab(t)}
       >
-        <TabsList className="grid grid-cols-2 p-0 w-1/4">
+        <TabsList className="grid grid-cols-2 p-0 md:w-1/4">
           <TabsTrigger value="recent-calls" className="p-0">
             <Button
               variant={activeTab === 'recent-calls' ? `default` : `ghost`}

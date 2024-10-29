@@ -45,9 +45,9 @@ export const columns: ColumnDef<Call>[] = [
 
       return (
         <div className="flex">
-          <HandleCall call={row.original} />
+          {/* <HandleCall call={row.original} /> */}
 
-          <Badge variant="secondary" className={`${callStatus.bgColor} ml-5`}>
+          <Badge variant="secondary" className={`${callStatus.bgColor}`}>
             <span className="flex items-center space-x-1">
               {callTypeIcon}
               <span>{callStatus.statusText}</span>
@@ -57,19 +57,19 @@ export const columns: ColumnDef<Call>[] = [
       );
     },
   },
-  // {
-  //   id: 'call-actions',
-  //   // header: ({ column }) => (
-  //   //   <DataTableColumnHeader column={column} title="Click to call" />
-  //   // ),
-  //   cell: ({ row }) => {
-  //     return (
-  //       <div className="flex">
-  //         <HandleCall call={row.original} />
-  //       </div>
-  //     );
-  //   },
-  // },
+  {
+    id: 'call-actions',
+    // header: ({ column }) => (
+    //   <DataTableColumnHeader column={column} title="Click to call" />
+    // ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex">
+          <HandleCall call={row.original} />
+        </div>
+      );
+    },
+  },
   // {
   //   accessorKey: 'dealerId',
   //   header: ({ column }) => (
@@ -134,10 +134,11 @@ export const columns: ColumnDef<Call>[] = [
     ),
     cell: ({ row }) => {
       const startTime = Number(row.original.starttime);
-      const durationEpoch = Number(row.getValue('endtime')) - startTime;
+      const endTime = Number(row.original.endtime);
+      const durationEpoch = endTime - startTime;
       let duration = formatDuration(durationEpoch);
 
-      if (startTime <= 0 || Number(row.getValue('endtime')) <= 0) {
+      if (startTime <= 0 || endTime <= 0) {
         duration = '0:00';
       }
 
@@ -148,42 +149,42 @@ export const columns: ColumnDef<Call>[] = [
       );
     },
   },
-  // {
-  //   accessorKey: 'starttime',
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Start Time" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     if (Number(row.getValue('starttime')) <= 0) return null;
-  //     const formattedStartTime = convertDateTime(row.getValue('starttime'));
-
-  //     return (
-  //       <div className="flex space-x-2">
-  //         <span className="max-w-[500px] truncate font-medium">
-  //           {formattedStartTime}
-  //         </span>
-  //       </div>
-  //     );
-  //   },
-  // },
   {
-    accessorKey: 'endtime',
+    accessorKey: 'starttime',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Call Time" />
     ),
     cell: ({ row }) => {
-      if (Number(row.getValue('endtime')) <= 0) return null;
-      const formattedEndTime = convertDateTime(row.getValue('endtime'));
+      if (Number(row.getValue('starttime')) <= 0) return null;
+      const formattedStartTime = convertDateTime(row.getValue('starttime'));
 
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
-            {formattedEndTime}
+            {formattedStartTime}
           </span>
         </div>
       );
     },
   },
+  // {
+  //   accessorKey: 'endtime',
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Call Time" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     if (Number(row.getValue('endtime')) <= 0) return null;
+  //     const formattedEndTime = convertDateTime(row.getValue('endtime'));
+
+  //     return (
+  //       <div className="flex space-x-2">
+  //         <span className="max-w-[500px] truncate font-medium">
+  //           {formattedEndTime}
+  //         </span>
+  //       </div>
+  //     );
+  //   },
+  // },
   {
     accessorKey: 'remarks',
     header: ({ column }) => (

@@ -10,7 +10,6 @@ import logo from '/public/nb-logo.svg';
 
 function AppLayout() {
   const { isAuthenticated, logout } = useAuth();
-  // TODO: Uncomment after testing and
   usePageRefresh();
 
   useEffect(() => {

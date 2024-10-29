@@ -174,7 +174,7 @@ function Login() {
             </Form>
           </CardContent>
         </Card>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </div>
   );
