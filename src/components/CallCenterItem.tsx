@@ -148,7 +148,7 @@ function CallCenterItem({
       session.state === 'Established');
 
   return (
-    <div className="mt-4">
+    <div className="mt-12">
       {/* Call state from socket */}
       {callStatus?.state && (
         <div

@@ -94,13 +94,13 @@ export const columns: ColumnDef<Call>[] = [
       return (
         <div className="flex items-center ml-14">
           {/* {clientid && (
-            <Avatar className="h-8 w-8">
+            <Avatar className="h-9 w-9">
               <AvatarImage
-                src={`https://api.dicebear.com/6.x/initials/svg?seed=${clientid}`}
+                // src={`https://api.dicebear.com/6.x/initials/svg?seed=${clientid}`}
                 alt={clientid}
                 className="rounded-full"
               />
-              <AvatarFallback>
+              <AvatarFallback className="border-2  bg-green-600 text-green-100">
                 {clientid
                   .split(' ')
                   .map((n) => n[0])
