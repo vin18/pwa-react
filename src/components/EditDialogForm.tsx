@@ -20,10 +20,12 @@ import { updateClientRecordsApi } from '@/services/apiClientDetails';
 import { getCallsApi } from '@/services/apiCalls';
 import { useEditHistory } from '@/hooks/useEditCallHistory';
 import { Textarea } from './ui/textarea';
+import { useAuth } from '@/contexts/AuthContext';
 
 function EditDialogForm({ clientDetailsData, setCalls }) {
   const [loading, setLoading] = useState(false);
   const { onClose } = useEditHistory();
+  const { dealer } = useAuth();
 
   const form = useForm<z.infer<typeof callSchema>>({
     resolver: zodResolver(callSchema),
@@ -43,7 +45,8 @@ function EditDialogForm({ clientDetailsData, setCalls }) {
     try {
       setLoading(true);
       await updateClientRecordsApi(payload);
-      const data = await getCallsApi();
+      if (!dealer) return;
+      const data = await getCallsApi(dealer.dealerid);
       setCalls(data);
       toast.success(`Details updated successfully`);
       onClose();
