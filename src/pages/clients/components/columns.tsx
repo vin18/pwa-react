@@ -82,4 +82,23 @@ export const columns: ColumnDef<Call>[] = [
       );
     },
   },
+  {
+    accessorKey: 'registeredphonenumber',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="ml-8"
+        column={column}
+        title="Phone Number"
+      />
+    ),
+    cell: ({ row }) => {
+      const registeredphonenumber = row.getValue('registeredphonenumber');
+
+      return (
+        <div className="flex items-center ml-8">
+          <span className="ml-2">{registeredphonenumber}</span>
+        </div>
+      );
+    },
+  },
 ];
