@@ -46,22 +46,12 @@ export function DashboardLayout() {
   const { registerStatus, sessionManager, connectStatus } = useSIPProvider();
   const { onOpen: handleMakeCallModalOpen, isOpen } = useMakeCallModal();
   const { dealer, logout } = useAuth();
-
   useCallManager();
 
-  // useEffect(() => {
-  //   setCallStatus(intialState);
-  // }, [sessionManager?.managedSessions]);
-
   const activeSessionId = sessionManager?.managedSessions[0]?.session?.id;
-  console.log('Active session id', activeSessionId);
-
-  // useEffect(() => {
-  //   setCallStatus(intialState);
-  // }, [sessionManager?.managedSessions[0]?.session?.id]);
 
   async function fetchCalls() {
-    const data = await getCallsApi();
+    const data = await getCallsApi(dealer.dealerid);
     setCalls(data);
   }
 

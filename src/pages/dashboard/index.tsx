@@ -5,15 +5,19 @@ import { columns } from './components/columns';
 import { getCallsApi } from '@/services/apiCalls';
 import usePageRefresh from '@/hooks/usePageRefresh';
 import { EditCallerInfoDialog } from '@/components/EditCallerInfoDialog';
+import { useAuth } from '@/contexts/AuthContext';
 
 function Dashboard({ calls, setCalls }) {
+  const { dealer } = useAuth();
+
   useEffect(() => {
-    async function fetchCalls() {
-      const data = await getCallsApi();
+    async function fetchCalls(dealerid) {
+      const data = await getCallsApi(dealerid);
       setCalls(data);
     }
-    fetchCalls();
-  }, []);
+
+    if (dealer) fetchCalls(dealer.dealerid);
+  }, [dealer]);
 
   return (
     <>

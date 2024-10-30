@@ -1,8 +1,8 @@
 import apiClient from '@/utils/apiClient';
 
-export async function getCallsApi() {
+export async function getCallsApi(dealerId) {
   try {
-    const { data } = await apiClient.post(`/v1/calls/getCalls`);
+    const { data } = await apiClient.post(`/v1/calls/getCalls`, { dealerId });
     return data;
   } catch (error: unknown) {
     console.log(error);
