@@ -7,9 +7,11 @@ import { socket } from '@/utils/socket';
 import { useAuth } from '@/contexts/AuthContext';
 import usePageRefresh from '@/hooks/usePageRefresh';
 import logo from '/public/nb-logo.svg';
+import { useSIPProvider } from './SipProvider';
 
 function AppLayout() {
   const { isAuthenticated, logout } = useAuth();
+  const { sessionManager } = useSIPProvider();
   usePageRefresh();
 
   useEffect(() => {
@@ -19,6 +21,8 @@ function AppLayout() {
         console.log('Socket disconnected on client');
         if (isAuthenticated) {
           await logout(false);
+          await sessionManager.unregister();
+          await sessionManager.disconnect();
         }
       });
     }

@@ -57,8 +57,6 @@ export const AuthProvider = ({ children }) => {
     setDealer(null);
     localStorage.clear();
     handleSocketDisconnect();
-    sessionManager?.disconnect();
-    sessionManager?.unregister();
     onClose();
   };
 

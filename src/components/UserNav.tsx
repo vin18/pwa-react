@@ -12,13 +12,17 @@ import {
 import { LogOut, Settings, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { useSIPProvider } from './SipProvider';
 
 export default function UserNav() {
   const [open, setOpen] = useState(false);
   const { dealer, logout } = useAuth();
+  const { sessionManager } = useSIPProvider();
 
   const handleLogout = async () => {
     await logout();
+    await sessionManager.unregister();
+    await sessionManager.disconnect();
     toast.success(`Logged out successfully`);
   };
 

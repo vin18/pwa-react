@@ -57,9 +57,10 @@ export function DashboardLayout() {
 
   useEffect(() => {
     socket.on(VTS_SOCKET_MESSAGE_CHANNEL, (data) => {
-      if (data.code === 'logout-event') {
-        logout();
-      } else if (data.code === VTS_SOCKET_CALL_CHANNEL) {
+      // if (data.code === 'logout-event') {
+      //   logout();
+      // } else
+      if (data.code === VTS_SOCKET_CALL_CHANNEL) {
         console.log('Socket data received: ', data.message);
         const callMsg = { state: '', message: '' };
         const {

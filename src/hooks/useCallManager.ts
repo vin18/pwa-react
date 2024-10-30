@@ -15,13 +15,13 @@ function useCallManager() {
   const WEBRTC_PASSWORD = import.meta.env.VITE_WEBRTC_PASSWORD;
 
   // useEffect(() => {
-  //   if (  registerStatus === RegisterStatus.UNREGISTERED && dealer) {
+  //   if (registerStatus === RegisterStatus.UNREGISTERED && dealer) {
   //     connectAndRegister({
   //       username: dealer.phonenumber,
   //       password: WEBRTC_PASSWORD,
   //     });
   //   }
-  // })
+  // });
 
   useEffect(() => {
     if (dealer) {
@@ -32,9 +32,10 @@ function useCallManager() {
     }
 
     return () => {
-      sessionManager?.disconnect();
+      sessionManager?.unregister().then(() => {
+        sessionManager?.disconnect();
+      });
       // .then(() => toast.success('Dealer disconnected..'));
-      sessionManager?.unregister();
       // .then(() => toast.success('Dealer unregistered..'));
     };
 
