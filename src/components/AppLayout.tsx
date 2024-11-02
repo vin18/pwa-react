@@ -10,15 +10,19 @@ import logo from '/public/nb-logo.svg';
 import { useSIPProvider } from './SipProvider';
 
 function AppLayout() {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, setIsWebSocketConnected } = useAuth();
   const { sessionManager } = useSIPProvider();
   usePageRefresh();
 
   useEffect(() => {
     if (socket) {
-      socket.on('connect', () => console.log('Socket connected on client'));
+      socket.on('connect', () => {
+        setIsWebSocketConnected(true);
+        console.log('Socket connected on client');
+      });
       socket.on('disconnect', async () => {
         console.log('Socket disconnected on client');
+        setIsWebSocketConnected(false);
         if (isAuthenticated) {
           await logout(false);
           await sessionManager.unregister();

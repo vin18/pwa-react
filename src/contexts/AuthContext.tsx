@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const { sessionManager } = useSIPProvider();
   const { onClose } = useEditHistory();
+  const [isWebSocketConnected, setIsWebSocketConnected] = useState(false);
 
   const [secretKey, setSecretKey] = useState('');
   const [token, setToken] = useLocalStorageState(
@@ -27,18 +28,6 @@ export const AuthProvider = ({ children }) => {
     null,
     VTS_LOCAL_STORAGE_DEALER_DATA_KEY
   );
-  // const [token, setToken] = useLocalStorageState(
-  //   null,
-  //   VTS_LOCAL_STORAGE_TOKEN_KEY,
-  //   secretKey
-  // );
-  // const [dealer, setDealer] = useLocalStorageState(
-  //   null,
-  //   VTS_LOCAL_STORAGE_DEALER_DATA_KEY,
-  //   secretKey
-  // );
-  // const [token, setToken] = useState(null);
-  // const [dealer, setDealer] = useState(null);
 
   const isAuthenticated = Boolean(token);
 
@@ -52,6 +41,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async (callApi = true) => {
+    await sessionManager?.unregister();
+    await sessionManager?.disconnect();
     if (callApi) await logoutApi();
     setToken(null);
     setDealer(null);
@@ -67,6 +58,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const handleSocketDisconnect = () => {
+    socket.auth = {};
+    socket.auth.token = `Bearer ${token}`;
     socket.disconnect();
   };
 
@@ -87,6 +80,8 @@ export const AuthProvider = ({ children }) => {
     token,
     setToken,
     dealer,
+    isWebSocketConnected,
+    setIsWebSocketConnected,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
